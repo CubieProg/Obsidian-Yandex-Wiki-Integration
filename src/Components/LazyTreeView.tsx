@@ -327,7 +327,7 @@ export const LazyTreeView = () => {
             selectId: onChange,
         }}
     >
-        <div>
+        <div style={{ marginLeft: -8 }}>
             <ul style={{ fontSize: 13, color: "currentColor", opacity: 0.85, paddingLeft: 8 }}>
                 {navigationTree.map((node: any) => (
                     <NodeView node={node} key={node.id} />

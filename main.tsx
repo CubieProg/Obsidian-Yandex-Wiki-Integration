@@ -6,6 +6,7 @@ import { addIcon } from 'obsidian';
 import { ItemView, WorkspaceLeaf, TFile } from 'obsidian';
 import * as obsidian from 'obsidian';
 
+import { RecentEditedNotesSettings } from "./src/Main/Settings/Settings"
 import { YWPannel } from './src/Components/YWPannel'
 
 
@@ -23,7 +24,6 @@ function getTopNFiles(plugin: Plugin, n: number) {
 	return files.slice(0, n)
 }
 
-import { join as path_join } from 'path';
 
 class RecentEditedNotesPlugin extends Plugin {
 	settings: RecentEditedNotesSettings; //| null = null
@@ -52,8 +52,8 @@ class RecentEditedNotesPlugin extends Plugin {
 
 	async closeYWPage(): Promise<void> {
 		if (this.display_tab instanceof WorkspaceLeaf) {
-			this.display_tab.detach()
 			// this.display_tab.view.unload()
+			this.display_tab.detach()
 		}
 	}
 
@@ -198,26 +198,8 @@ class RecentEditedNotesView extends ItemView {
 			await this.plugin.saveSettings()
 		}));
 		this.registerEvent(this.app.vault.on('yandex-wiki-integration:get-wiki-page', async (data: string) => {
-
 			this.plugin.openYWPage(data)
-			// const new_tab = this.app.workspace.getLeaf('markdown')
-			// this.app.workspace.
-			// new_tab.view.disp
 		}));
-		// 'yandex-wiki-integration:get-wiki-page'
-
-
-		// this.app.vault.trigger("session-fetch", 123)
-
-		// this.update_events.forEach((ev_name: any) => { // с any он не ругается в вопросике
-		// 	this.registerEvent(
-		// 		this.plugin.app.vault.on(ev_name, (...args: any[]) => { // ?
-		// 			this.update()
-		// 		})
-		// 	)
-		// })
-
-		// this.update()
 
 		this.render()
 	}
@@ -233,14 +215,7 @@ class RecentEditedNotesView extends ItemView {
 
 		this.root.render(
 			<StrictMode>
-				{/* <div
-					className='testClass'
-					style={{ width: 100, height: 100, background: "red" }}
-				></div> */}
 				<YWPannel plugin={this.plugin} />
-				{/* <MyButton />
-				<LoginButton />
-				<TreeView data={data}></TreeView> */}
 			</StrictMode>
 		);
 	}
@@ -263,21 +238,6 @@ class RecentEditedNotesView extends ItemView {
 				this.app.workspace.openLinkText(file.path, "", false) // Open the note
 			})
 		}
-	}
-}
-
-
-class RecentEditedNotesSettings {
-	listLength: number = 10;
-	session: any;
-
-	constructor(data: any) {
-		this.listLength = data.listLength
-		this.session = data.session
-	}
-
-	public registerSession(session: any) {
-		this.session = session;
 	}
 }
 
