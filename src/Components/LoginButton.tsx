@@ -127,7 +127,7 @@ export const LoginButton = () => {
         let session;
 
         try {
-            session = context.plugin.settings.session
+            session = context.plugin.settings.data.session
 
             session = await authtorize(true, false, session);
             context.plugin.app.vault.trigger("yandex-wiki-integration:session-fetch", session)
