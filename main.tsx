@@ -1,16 +1,11 @@
-import { StrictMode } from 'react';
-import { Root, createRoot } from 'react-dom/client';
-
-import { ItemView, WorkspaceLeaf, TFile, ViewState, addIcon, Plugin } from 'obsidian';
+import { WorkspaceLeaf, TFile, ViewState, addIcon, Plugin } from 'obsidian';
 
 import { RecentEditedNotesSettings } from "./src/Main/Settings/Settings"
-import { RecentEditedNotesSettingTabN } from "./src/Main/Settings/SettingsTab"
+import { RecentEditedNotesSettingTab } from "./src/Main/Settings/SettingsTab"
+import { YWIView } from "./src/Main/Components/YWIView"
 
-import { YWPannel } from './src/Components/YWPannel'
-
-
-
-const pluginName = "experience-plugin-third-ts"
+// Нотация.
+// 		YWI: Yandex Wiki Integration. Везде, где используется это сокращение, читать надо так.
 
 class YWIPlugin extends Plugin {
 	settings: RecentEditedNotesSettings;
@@ -86,13 +81,27 @@ class YWIPlugin extends Plugin {
 		return file
 	}
 
+
+	private registerEvents() {
+		// Ругается хуй пойми на что. Надо нормальную обёртку делать
+		this.registerEvent(this.app.vault.on('yandex-wiki-integration:session-fetch', async (data: any) => {
+			this.settings.registerSession(data)
+		}));
+		this.registerEvent(this.app.vault.on('yandex-wiki-integration:get-wiki-page', async (data: string) => {
+			this.openYWPage(data)
+		}));
+	}
+
 	async onload() {
+
 
 		addIcon('yandex-wiki-integration-icon',
 			`<text x="40%" y="70%" dominant-baseline="middle" text-anchor="middle" fill="currentColor" style="font: bold 56px sans-serif;">YW</text>  `);
 
 		this.settings = new RecentEditedNotesSettings(this)
 		await this.settings.load()
+
+		this.registerEvents()
 
 
 		this.addCommand({
@@ -102,12 +111,10 @@ class YWIPlugin extends Plugin {
 			}
 		});
 
-		// this.addSettingTab(new RecentEditedNotesSettingTab(this.app, this))
-
-		this.addSettingTab(new RecentEditedNotesSettingTabN(this, this.settings))
+		this.addSettingTab(new RecentEditedNotesSettingTab(this, this.settings))
 
 		this.registerView(
-			VIEW_TYPE_RECENT_EDITED_NOTES,
+			YWIView.view_type_ywi,
 			(leaf) => new YWIView(leaf, this)
 
 		)
@@ -122,7 +129,7 @@ class YWIPlugin extends Plugin {
 		const { workspace } = this.app
 
 		let leaf = null
-		const leaves = workspace.getLeavesOfType(VIEW_TYPE_RECENT_EDITED_NOTES)
+		const leaves = workspace.getLeavesOfType(YWIView.view_type_ywi)
 
 		if (leaves.length > 0) {
 			leaf = leaves[0]
@@ -131,72 +138,12 @@ class YWIPlugin extends Plugin {
 			if (leaf === null) {
 				return
 			}
-			await leaf.setViewState({ type: VIEW_TYPE_RECENT_EDITED_NOTES, active: true })
+			await leaf.setViewState({ type: YWIView.view_type_ywi, active: true })
 		}
 
-		// "Reveal" the leaf in case it is in a collapsed sidebar
 		workspace.revealLeaf(leaf)
 	}
 }
 
-
-
-const VIEW_TYPE_RECENT_EDITED_NOTES = 'recent-edited-notes-view-ts'
-class YWIView extends ItemView {
-
-	plugin: YWIPlugin;
-	update_events: Array<string>;
-	root: Root | null = null;
-
-	constructor(leaf: WorkspaceLeaf, plugin: YWIPlugin) {
-		super(leaf)
-		this.plugin = plugin
-		this.update_events = [
-			'modify',
-			'rename',
-			'experience-third:save-settings',
-			'yandex-wiki-integration:session-fetch',
-			'yandex-wiki-integration:get-wiki-page'
-		]
-
-	}
-
-	getViewType() {
-		return VIEW_TYPE_RECENT_EDITED_NOTES
-	}
-
-	getDisplayText() {
-		return 'Yandex Wiki'
-	}
-
-	getIcon() {
-		return "yandex-wiki-integration-icon"
-	}
-
-	async onOpen() {
-		// Ругается хуй пойми на что. Надо нормальную обёртку делать
-		this.registerEvent(this.app.vault.on('yandex-wiki-integration:session-fetch', async (data) => {
-			this.plugin.settings.registerSession(data)
-		}));
-		this.registerEvent(this.app.vault.on('yandex-wiki-integration:get-wiki-page', async (data: string) => {
-			this.plugin.openYWPage(data)
-		}));
-
-		this.render()
-	}
-
-	render() {
-		const svgLink = "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=logout"
-
-		const container = this.containerEl.children[1]
-		this.root = createRoot(container);
-
-		this.root.render(
-			<StrictMode>
-				<YWPannel plugin={this.plugin} />
-			</StrictMode>
-		);
-	}
-}
 
 module.exports = YWIPlugin
