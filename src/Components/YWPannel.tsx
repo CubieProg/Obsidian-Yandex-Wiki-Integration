@@ -1,0 +1,105 @@
+import { StrictMode, useState, useEffect, ReactElement } from 'react';
+import { createContext, useContext } from 'react';
+
+import { Plugin } from 'obsidian';
+
+import { LoginButton } from './LoginButton';
+
+import { CustomTree } from "./CustomTreeView"
+import { LazyTreeView } from "./LazyTreeView"
+
+
+
+import { YwIContext, YwIContextData } from "../Model/YWIContext"
+
+// const YwIContext = createContext(Object.create(null));
+
+
+//  | View | <=> | ViewModel | <=> | Model |
+
+class DataComponent {
+    constructor(obj: any) {
+
+    }
+
+    private AddObjectHooks(obj: any): any {
+        for (let item in Object.keys(obj)) {
+            [obj.item, obj[`set${item}`]] = useState(obj.item);
+        }
+
+        return obj;
+    }
+
+    private CreateObjectFromArray(arr: Array<string>) {
+        let obj = Object.create(null);
+
+        for (let item in arr) {
+            [obj.item, obj[`set${item}`]] = useState(obj.item);
+        }
+
+        return obj;
+    }
+}
+
+class ViewModel {
+    Context: React.Context<any>;
+
+    constructor(init_object: any) {
+        this.Context = createContext(Object.create(null));
+
+        for (let item in Object.keys(init_object)) {
+
+        }
+    }
+
+    private AddObjectHooks(obj: any): any {
+        for (let item in Object.keys(obj)) {
+
+        }
+    }
+
+    getContext() {
+        return this.Context;
+    }
+}
+
+
+
+type YWIPannelType = {
+    plugin: Plugin
+}
+
+export const YWPannel = ({ plugin }: YWIPannelType) => {
+    // setting context
+    // -----------------------------------------------
+    const [theme, setTheme] = useState('dark');
+
+    const [navigationTree, setNavigationTree] = useState(YwIContextData.navigationTree)
+    const [eventManager, setEventManager] = useState(YwIContextData.eventManager)
+    const [sessionData, setSessionData] = useState(YwIContextData.sessionData)
+    // setNavigationTree(navigationTree)
+
+    const value = {
+        navigationTree, setNavigationTree,
+        eventManager, setEventManager,
+        sessionData, setSessionData,
+
+        plugin
+    };
+
+
+    const plugin_ref = plugin
+
+    // console.log(YwIContext.Provider)
+
+    // plugin.app.vault.trigger("session-fetch", 321)
+
+    return (
+        <YwIContext.Provider value={value}>
+            <LoginButton />
+            {/* <TreeView /> */}
+            <LazyTreeView />
+        </YwIContext.Provider>
+    )
+}
+

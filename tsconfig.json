@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+
+
+    // "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+
+
+
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "allowSyntheticDefaultImports": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    // "experimentalDecorators": false,
+    "module": "ESNext",
+    "target": "ES6",
+    "allowJs": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "isolatedModules": true,
+    "strictNullChecks": true,
+    "lib": [
+      "DOM",
+      "ES5",
+      "ES6",
+      "ES7"
+    ]
+  },
+  "include": [
+    "**/*.tsx"
+  ]
+}
+
+
+// {
+//   "compilerOptions": {
+//     "target": "ES5",
+//     "experimentalDecorators": true
+//   }
+// }
+// Decorators

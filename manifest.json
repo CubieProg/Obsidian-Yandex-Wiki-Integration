@@ -1,0 +1,11 @@
+{
+	"id": "sample-plugin ts",
+	"name": "Yandex Wiki Integration",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Try to enable ts",
+	"author": "Me",
+	"authorUrl": "https://obsidian.md",
+	"fundingUrl": "https://obsidian.md/pricing",
+	"isDesktopOnly": false
+}
