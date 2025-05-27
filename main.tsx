@@ -46,6 +46,12 @@ class RecentEditedNotesPlugin extends Plugin {
 		await display_tab.openFile(display_file)
 	}
 
+	async closeYWPage(): Promise<void> {
+		if (this.display_tab instanceof WorkspaceLeaf) {
+			this.display_tab.detach()
+			// this.display_tab.view.unload()
+		}
+	}
 
 
 	private async getOrCreateDisplayTab(): Promise<WorkspaceLeaf | undefined> {
@@ -91,46 +97,6 @@ class RecentEditedNotesPlugin extends Plugin {
 		await this.loadSettings(data)
 
 
-
-
-		// this.display_file = await this.getOrCreateDisplayFile()
-
-		// let tab = await this.openYWPage()
-
-
-
-
-		// const YWFileName = "Yandex Wiki Display File"
-		// const YWFileNameMD = "Yandex Wiki Display File.md"
-		// let file = this.app.vault.getMarkdownFiles().find(file => file.name === YWFileNameMD)
-
-		// if (!file) {
-		// 	const file = await this.app.vault.create(YWFileNameMD, "### Страница рендера _страниц_ (ха-ха) из Yandex Wiki")
-		// }
-		// if (file instanceof obsidian.TFile) {
-		// 	const new_tab = await this.app.workspace.getLeaf('tab').openFile(file)
-		// }
-
-		console.log(1234)
-		console.log(this.app.workspace.getLeavesOfType('markdown'))
-		console.log(this.app.workspace.getLeavesOfType('tab'))
-
-		// this.app.workspace.getLeafById()
-
-		// console.log(this.app.workspace.getActiveViewOfType())
-
-		// obsidian.Constr
-
-		// const new_tab = await this.app.workspace.getLeaf('tab')
-		// new_tab.
-		// new_tab.view.
-
-
-
-
-
-
-
 		this.addCommand({
 			id: 'upload-vault',
 			name: 'Upload Vault',
@@ -146,7 +112,10 @@ class RecentEditedNotesPlugin extends Plugin {
 
 		)
 		this.activateView()
+	}
 
+	async onunload(): Promise<void> {
+		this.closeYWPage()
 	}
 
 

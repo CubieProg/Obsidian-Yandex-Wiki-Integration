@@ -51,7 +51,7 @@ type NavLineType = {
 export const NavLineView = ({ navLineHeight }: NavLineType) => {
     return <div
         style={{
-            width: 13,
+            width: 15,
             height: navLineHeight,
             float: "left",
         }}
@@ -74,15 +74,17 @@ export const NavLineView = ({ navLineHeight }: NavLineType) => {
 type NavArrowType = {
     empty?: boolean
     open?: boolean
+    onClick?: Function
 }
 
-export const NavArrowView = ({ empty, open }: NavArrowType) => {
+export const NavArrowView = ({ empty, open, onClick }: NavArrowType) => {
     if (empty === true) {
         return <div
             style={{
                 width: 16,
                 height: 16,
-                float: "left"
+                float: "left",
+                marginRight: 4
             }}
         ></div>
     }
@@ -91,7 +93,16 @@ export const NavArrowView = ({ empty, open }: NavArrowType) => {
         style={{
             width: 16,
             height: 16,
-            float: "left"
+            float: "left",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginRight: 4
+        }}
+        onClick={() => {
+            if (onClick instanceof Function) {
+                onClick()
+            }
         }}
     >
         <svg
@@ -172,8 +183,6 @@ export const NodeView = ({ node }: TreeNodeViewType) => {
     const { open, dispatch } = useContext(TreeViewContext)
     const { navigationTree, setNavigationTree, sessionData, plugin } = useContext(YwIContext)
 
-
-
     const isOpen = open.get(node.id)
 
     const [navLineHeight, setNavLineHeight] = useState(0);
@@ -192,6 +201,32 @@ export const NodeView = ({ node }: TreeNodeViewType) => {
         )}
     </div>
 
+    const unwrapCallback = async () => {
+        const type = isOpen ? TreeViewActionTypes.CLOSE : TreeViewActionTypes.OPEN
+
+        if (type === TreeViewActionTypes.OPEN && node.has_children) {
+            const parentSlug: String | undefined = node.slug?.join("/") // нужно что-то добавлять
+
+            if (typeof parentSlug === 'string') {
+                const childrensData = await getNavTreeNode(sessionData, parentSlug)
+                const childrenNodes = [...childrensData.tree[0].children.results]
+                    .map(node =>
+                    ({
+                        id: uuid(),
+                        name: node.title,
+                        slug: node.slug.split("/"),
+                        navName: node.slug.split("/")[node.slug.split("/").length - 1],
+                        has_children: node.has_children
+                    }))
+
+                addChilds(navigationTree, node.slug, childrenNodes)
+                setNavigationTree(navigationTree)
+            }
+        }
+
+        dispatch({ id: node.id, type: type })
+    }
+
     useLayoutEffect(() => {
         const current: any = ref?.current           // так он не ругается
         setNavLineHeight(current?.offsetHeight);    // <= вот тут изначально был ```ref?.current?.offsetHeight```
@@ -208,45 +243,18 @@ export const NodeView = ({ node }: TreeNodeViewType) => {
                 }}
 
                 onClick={async () => {
-                    const type = isOpen ? TreeViewActionTypes.CLOSE : TreeViewActionTypes.OPEN
+                    const parentSlug: String | undefined = node.slug?.join("/") // нужно что-то добавлять
 
-                    if (type === TreeViewActionTypes.OPEN && node.has_children) {
-                        const parentSlug: String | undefined = node.slug?.join("/") // нужно что-то добавлять
+                    if (typeof parentSlug === 'string') {
+                        console.log("get page puk-sren`k")
+                        const page_data = await getYWPage(sessionData, parentSlug)
+                        console.log(page_data)
 
-                        if (typeof parentSlug === 'string') {
-                            const childrensData = await getNavTreeNode(sessionData, parentSlug)
-                            const childrenNodes = [...childrensData.tree[0].children.results]
-                                .map(node =>
-                                ({
-                                    id: uuid(),
-                                    name: node.title,
-                                    slug: node.slug.split("/"),
-                                    navName: node.slug.split("/")[node.slug.split("/").length - 1],
-                                    has_children: node.has_children
-                                }))
-
-
-                            addChilds(navigationTree, node.slug, childrenNodes)
-                            setNavigationTree(navigationTree)
-                        }
+                        plugin.app.vault.trigger("yandex-wiki-integration:get-wiki-page", page_data.content)
                     }
-
-                    if (node.has_children !== true) {
-                        const parentSlug: String | undefined = node.slug?.join("/") // нужно что-то добавлять
-
-                        if (typeof parentSlug === 'string') {
-                            console.log("get page puk-sren`k")
-                            const page_data = await getYWPage(sessionData, parentSlug)
-                            console.log(page_data)
-
-                            plugin.app.vault.trigger("yandex-wiki-integration:get-wiki-page", page_data.content)
-                        }
-                    }
-
-                    dispatch({ id: node.id, type: type })
                 }}
             >
-                <NavArrowView empty={!node.has_children} open={isOpen} />
+                <NavArrowView empty={!node.has_children} open={isOpen} onClick={unwrapCallback} />
                 {node.name}
             </div>
 
