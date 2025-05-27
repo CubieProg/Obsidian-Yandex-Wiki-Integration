@@ -44,6 +44,10 @@ class RecentEditedNotesPlugin extends Plugin {
 
 		await this.app.vault.modify(display_file, data);
 		await display_tab.openFile(display_file)
+
+		let state: obsidian.ViewState = display_tab.getViewState();
+		if (state.state !== undefined) { state.state.mode = 'preview' }
+		display_tab.setViewState(state)
 	}
 
 	async closeYWPage(): Promise<void> {

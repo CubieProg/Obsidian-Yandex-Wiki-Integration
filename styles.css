@@ -89,3 +89,24 @@ If your plugin does not need CSS, delete this file.
     /* background-color: rgb(255, 111, 111); */
     /* opacity: 0.725; */
 }
+/* 
+.treeNavArrow
+ */
+
+
+.treeNavArrow:hover {
+    background-color: rgb(228, 228, 228);
+    color: black;
+    opacity: 1;
+    border-radius: 4px;
+}
+
+
+.treeNavArrow:active  {
+    background-color: rgb(200, 200, 200);
+    color: black;
+    opacity: 1;
+    /* width:  */
+    /* background-color: rgb(255, 111, 111); */
+    /* opacity: 0.725; */
+}

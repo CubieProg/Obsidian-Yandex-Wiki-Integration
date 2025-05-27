@@ -69,29 +69,6 @@ export async function getNavTreeNode(session_data: object, parentSlug: string) {
 
 
 
-export async function testPage() {
-
-    console.log("req")
-    return requestUrl({
-        url: "https://wiki.yandex.ru/.gateway/root/wiki/getPageDetails",
-        method: "POST",
-        headers: {
-            "content-type": "application/json",
-            "x-collab-org-id": "c16fe7d1-e7fd-4ee9-ac85-f045c5d33a64",
-            "x-csrf-token": "c98ba02397d7c3fdfc52d3e3e1dec45156e227a0:1748261114",
-            // "cookie": "is_gdpr=0; is_gdpr_b=CPeNKxDMwgIoAg==; i=Sejovl3ZhmLmw97HyeJc0cWAt1Rh0Tj4s1TJrdYchq9LvEEMJkUoTw8ZBNo2alAi+cza4huS0bmjSL51EwaHIWxLKZY=; yandexuid=6976519031748252971; yashr=5176086591748252971; yuidss=6976519031748252971; ymex=2063612974.yrts.1748252974; yclid_src=yabs.yandex.ru/resource/spacer.gif:5298760901816483839:6976519031748252971; gdpr=0; _ym_uid=1748252974566627094; _ym_d=1748252974; my=YwA=; _ym_isad=2; Session_id=3:1748253055.5.0.1748253055530:Fck_Ag:589b.1.2:1|777835964.0.2.3:1748253055|3:10308027.973530.zj6GZ0ALaXHpAYGsheKJsQOFPug; sessar=1.1202.CiAHOZTxo0zRXPxsa-rM9gu3pAIhh8bHYKSVuKkh_Sbohw.jY3OPFMHTpwO6hEwGhutzvo1gwMeby-TT1SrN09xbro; sessionid2=3:1748253055.5.0.1748253055530:Fck_Ag:589b.1.2:1|777835964.0.2.3:1748253055|3:10308027.973530.fakesign0000000000000000000; yp=1749116973.dlp.2#1750931373.hdrc.0#2063612972.pcs.0#1779788973.swntab.0#1764020982.szm.1_25:1536x864:442x731#2063613055.udn.cDpBbm90aGVyU2ltcGxlVXNlcg%3D%3D; L=BXVcZ15jUgp2RW8CY2J8VwAFSl5cSGF2MzolBwMJFioMDjgEUDsxCQY=.1748253055.16163.366069.a555da8e1b2ef44c9f621df9b9c00a9b; yandex_login=AnotherSimpleUser; ys=udn.cDpBbm90aGVyU2ltcGxlVXNlcg%3D%3D#c_chck.2939616431; yc_session=c1.9euelZrLmpmSk8-dzJnPnZKOmoyblO3rnpWaxpmWl8vKkY2TloqZmsmYksrl8_d7DC8--e9jXCJS_N3z93tyED3572NcIlL81ej18oac0ZCeiouX0YiWlJbt-ZCPmpGWm83X9dudx8nMnMiZztKamcbI0suey5vSxsaem9KencnPxsvNmpydx8zv_sXrnpWalpXLkc3HjJSKkpaPm86JmcqF_w.40_WBxE66mW8yhDMl_-i4mcOOeWq20cCejPtcVeW6_wcfrCwOl_t12fW8az7ekdAuluGh8i_H9Ig2dbsOLNvCg; _yasc=pbqNP27Jf6rdNtTDyxmasqhrplTbFmCo+VJE8/ufJC/pkkZrdFRYsZNFnCGOcCbsP3wHjtDE4kE4; bh=EkIiQ2hyb21pdW0iO3Y9IjEzNiIsICJNaWNyb3NvZnQgRWRnZSI7dj0iMTM2IiwgIk5vdC5BL0JyYW5kIjt2PSI5OSIaA3g4NiINMTM2LjAuMzI0MC43NioCPzAyAiIiOgkiV2luZG93cyJCBjEwLjAuMEoCNjRSWyJDaHJvbWl1bSI7dj0iMTM2LjAuNzEwMy4xMTMiLCJNaWNyb3NvZnQgRWRnZSI7dj0iMTM2LjAuMzI0MC43NiIsIk5vdC5BL0JyYW5kIjt2PSI5OS4wLjAuMCJaAj8wYNGx0cEGaiHcyuH/CJLYobEDn8/h6gP7+vDnDev//fYPwaPNhwjg1wM=; CSRF-TOKEN=c98ba02397d7c3fdfc52d3e3e1dec45156e227a0%3A1748261114",
-            // "cookie": "Session_id=3:1748253055.5.0.1748253055530:Fck_Ag:589b.1.2:1|777835964.0.2.3:1748253055|3:10308027.973530.zj6GZ0ALaXHpAYGsheKJsQOFPug; sessar=1.1202.CiAHOZTxo0zRXPxsa-rM9gu3pAIhh8bHYKSVuKkh_Sbohw.jY3OPFMHTpwO6hEwGhutzvo1gwMeby-TT1SrN09xbro; sessionid2=3:1748253055.5.0.1748253055530:Fck_Ag:589b.1.2:1|777835964.0.2.3:1748253055|3:10308027.973530.fakesign0000000000000000000; yp=1749116973.dlp.2#1750931373.hdrc.0#2063612972.pcs.0#1779788973.swntab.0#1764020982.szm.1_25:1536x864:442x731#2063613055.udn.cDpBbm90aGVyU2ltcGxlVXNlcg%3D%3D; L=BXVcZ15jUgp2RW8CY2J8VwAFSl5cSGF2MzolBwMJFioMDjgEUDsxCQY=.1748253055.16163.366069.a555da8e1b2ef44c9f621df9b9c00a9b; yandex_login=AnotherSimpleUser; ys=udn.cDpBbm90aGVyU2ltcGxlVXNlcg%3D%3D#c_chck.2939616431; yc_session=c1.9euelZrLmpmSk8-dzJnPnZKOmoyblO3rnpWaxpmWl8vKkY2TloqZmsmYksrl8_d7DC8--e9jXCJS_N3z93tyED3572NcIlL81ej18oac0ZCeiouX0YiWlJbt-ZCPmpGWm83X9dudx8nMnMiZztKamcbI0suey5vSxsaem9KencnPxsvNmpydx8zv_sXrnpWalpXLkc3HjJSKkpaPm86JmcqF_w.40_WBxE66mW8yhDMl_-i4mcOOeWq20cCejPtcVeW6_wcfrCwOl_t12fW8az7ekdAuluGh8i_H9Ig2dbsOLNvCg; _yasc=pbqNP27Jf6rdNtTDyxmasqhrplTbFmCo+VJE8/ufJC/pkkZrdFRYsZNFnCGOcCbsP3wHjtDE4kE4; bh=EkIiQ2hyb21pdW0iO3Y9IjEzNiIsICJNaWNyb3NvZnQgRWRnZSI7dj0iMTM2IiwgIk5vdC5BL0JyYW5kIjt2PSI5OSIaA3g4NiINMTM2LjAuMzI0MC43NioCPzAyAiIiOgkiV2luZG93cyJCBjEwLjAuMEoCNjRSWyJDaHJvbWl1bSI7dj0iMTM2LjAuNzEwMy4xMTMiLCJNaWNyb3NvZnQgRWRnZSI7dj0iMTM2LjAuMzI0MC43NiIsIk5vdC5BL0JyYW5kIjt2PSI5OS4wLjAuMCJaAj8wYNGx0cEGaiHcyuH/CJLYobEDn8/h6gP7+vDnDev//fYPwaPNhwjg1wM=; CSRF-TOKEN=c98ba02397d7c3fdfc52d3e3e1dec45156e227a0%3A1748261114",
-            "cookie": "Session_id=3:1748253055.5.0.1748253055530:Fck_Ag:589b.1.2:1|777835964.0.2.3:1748253055|3:10308027.973530.zj6GZ0ALaXHpAYGsheKJsQOFPug; yc_session=c1.9euelZrLmpmSk8-dzJnPnZKOmoyblO3rnpWaxpmWl8vKkY2TloqZmsmYksrl8_d7DC8--e9jXCJS_N3z93tyED3572NcIlL81ej18oac0ZCeiouX0YiWlJbt-ZCPmpGWm83X9dudx8nMnMiZztKamcbI0suey5vSxsaem9KencnPxsvNmpydx8zv_sXrnpWalpXLkc3HjJSKkpaPm86JmcqF_w.40_WBxE66mW8yhDMl_-i4mcOOeWq20cCejPtcVeW6_wcfrCwOl_t12fW8az7ekdAuluGh8i_H9Ig2dbsOLNvCg",
-        },
-        body: "{\"slug\":\"aaa/yhnnhsmbtest/spisokrabotiartefaktov\",\"fields\":[\"content\"]}"
-    })
-        .then(async (response) => {
-            return (await response.json)
-        })
-        .catch(err => console.log(err))
-
-
-}
 
 export async function getYWPage(session_data: object, parentSlug: string) {
     const URL: string = "https://wiki.yandex.ru/.gateway/root/wiki/getPageDetails"

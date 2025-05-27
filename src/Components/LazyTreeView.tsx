@@ -81,23 +81,22 @@ export const NavArrowView = ({ empty, open, onClick }: NavArrowType) => {
     if (empty === true) {
         return <div
             style={{
-                width: 16,
-                height: 16,
+                width: 24,
+                height: 24,
                 float: "left",
-                marginRight: 4
             }}
         ></div>
     }
 
     return <div
+        className='treeNavArrow'
         style={{
-            width: 16,
-            height: 16,
+            width: 24,
+            height: 24,
             float: "left",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            marginRight: 4
+            justifyContent: "center"
         }}
         onClick={() => {
             if (onClick instanceof Function) {
@@ -229,41 +228,61 @@ export const NodeView = ({ node }: TreeNodeViewType) => {
 
     useLayoutEffect(() => {
         const current: any = ref?.current           // так он не ругается
-        setNavLineHeight(current?.offsetHeight);    // <= вот тут изначально был ```ref?.current?.offsetHeight```
+        setNavLineHeight(current?.offsetHeight - 4);    // <= вот тут изначально был ```ref?.current?.offsetHeight```
     }, [childrensView]);
 
-    return <div>
-        <li style={{ listStyleType: "none" }}>
+    return <li style={{ listStyleType: "none" }}>
+        <div
+            style={{
+                margin: 0,
+                // paddingTop: 5,
+                // paddingBottom: 5,
+                width: "max-content",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                // display: "inline-block",
+            }}
+
+            // className='treeNodeContainer'
+
+            onClick={async () => {
+                const parentSlug: String | undefined = node.slug?.join("/") // нужно что-то добавлять
+
+                if (typeof parentSlug === 'string') {
+                    console.log("get page puk-sren`k")
+                    const page_data = await getYWPage(sessionData, parentSlug)
+                    console.log(page_data)
+
+                    // plugin.app.vault.trigger("yandex-wiki-integration:get-wiki-page", page_data.content)
+                    plugin.app.vault.trigger("yandex-wiki-integration:get-wiki-page", page_data.html)
+                }
+            }}
+        >
+            <NavArrowView empty={!node.has_children} open={isOpen} onClick={unwrapCallback} />
+
             <div
+                className='treeNodeContainer'
                 style={{
-                    margin: 0,
+                    // width: 1111,//"max-content",
+                    paddingLeft: 8,
+                    paddingRight: 8,
                     paddingTop: 5,
                     paddingBottom: 5,
-                    width: "max-content",
+                    // display: "inline-block",
+                    // height: "100%",
+                    // float: "left",
                 }}
+            >{node.name}</div>
+            {/* <div></div> */}
+            {/* {node.name} */}
+        </div>
 
-                onClick={async () => {
-                    const parentSlug: String | undefined = node.slug?.join("/") // нужно что-то добавлять
+        {node.children?.length && isOpen &&
+            childrensView
+        }
 
-                    if (typeof parentSlug === 'string') {
-                        console.log("get page puk-sren`k")
-                        const page_data = await getYWPage(sessionData, parentSlug)
-                        console.log(page_data)
-
-                        plugin.app.vault.trigger("yandex-wiki-integration:get-wiki-page", page_data.content)
-                    }
-                }}
-            >
-                <NavArrowView empty={!node.has_children} open={isOpen} onClick={unwrapCallback} />
-                {node.name}
-            </div>
-
-            {node.children?.length && isOpen &&
-                childrensView
-            }
-
-        </li>
-    </div>
+    </li>
 }
 
 
