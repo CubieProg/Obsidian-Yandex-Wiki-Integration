@@ -1,20 +1,19 @@
 import { WorkspaceLeaf, TFile, ViewState, addIcon, Plugin } from 'obsidian';
 
-import { RecentEditedNotesSettings } from "./src/Main/Settings/Settings"
-import { RecentEditedNotesSettingTab } from "./src/Main/Settings/SettingsTab"
+import { YWISettings } from "./src/Main/Settings/Settings"
+import { YWISettingsTab } from "./src/Main/Settings/SettingsTab"
 import { YWIView } from "./src/Main/Components/YWIView"
 
 // Нотация.
 // 		YWI: Yandex Wiki Integration. Везде, где используется это сокращение, читать надо так.
 
 class YWIPlugin extends Plugin {
-	settings: RecentEditedNotesSettings;
+	settings: YWISettings;
 
 	static view_type_display_tab: string = "yandex-wiki-display-tab"
 
 	private display_file: TFile
 	private display_tab: WorkspaceLeaf
-
 
 	async openYWPage(data: string) {
 		const [
@@ -92,26 +91,25 @@ class YWIPlugin extends Plugin {
 		}));
 	}
 
-	async onload() {
-
-
-		addIcon('yandex-wiki-integration-icon',
-			`<text x="40%" y="70%" dominant-baseline="middle" text-anchor="middle" fill="currentColor" style="font: bold 56px sans-serif;">YW</text>  `);
-
-		this.settings = new RecentEditedNotesSettings(this)
-		await this.settings.load()
-
-		this.registerEvents()
-
-
+	private registerCommands() {
 		this.addCommand({
 			id: 'upload-vault',
 			name: 'Upload Vault',
 			callback: () => {
 			}
 		});
+	}
 
-		this.addSettingTab(new RecentEditedNotesSettingTab(this, this.settings))
+	async onload() {
+		addIcon('yandex-wiki-integration-icon',
+			`<text x="40%" y="70%" dominant-baseline="middle" text-anchor="middle" fill="currentColor" style="font: bold 56px sans-serif;">YW</text>  `);
+
+		this.settings = new YWISettings(this)
+		await this.settings.load()
+		this.addSettingTab(new YWISettingsTab(this, this.settings))
+
+		this.registerEvents()
+		this.registerCommands()
 
 		this.registerView(
 			YWIView.view_type_ywi,
@@ -145,5 +143,5 @@ class YWIPlugin extends Plugin {
 	}
 }
 
-
+// Нельзя пихуйнуть в `export class YWIPlugin`. Obsidian его тупо не загрузит. Или нужно копаться, но пофиг
 module.exports = YWIPlugin

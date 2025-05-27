@@ -1,11 +1,12 @@
 import { App, Plugin, PluginSettingTab, TextComponent } from 'obsidian';
 
 
-export class RecentEditedNotesSettings {
+export class YWISettings {
     private plugin: Plugin;
 
     data: {
         listLength: number;
+        homeSlug: string;
         session: any;
     }
 

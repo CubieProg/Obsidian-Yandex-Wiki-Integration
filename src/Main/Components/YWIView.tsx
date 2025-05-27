@@ -7,9 +7,9 @@ import { YWPannel } from "src/Components/YWPannel";
 export class YWIView extends ItemView {
     static view_type_ywi: string = 'recent-edited-notes-view-ts'
 
-    plugin: Plugin;
-    update_events: Array<string>;
-    root: Root | null = null;
+    private plugin: Plugin;
+    private update_events: Array<string>;
+    private root: Root | null = null;
 
     constructor(leaf: WorkspaceLeaf, plugin: Plugin) {
         super(leaf)

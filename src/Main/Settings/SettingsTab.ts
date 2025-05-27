@@ -1,16 +1,16 @@
 
 
 import { App, Plugin, PluginSettingTab, TextComponent } from 'obsidian';
-import { RecentEditedNotesSettings } from './Settings'
+import { YWISettings } from './Settings'
 import * as obsidian from 'obsidian';
 
 
 
-export class RecentEditedNotesSettingTab extends PluginSettingTab {
+export class YWISettingsTab extends PluginSettingTab {
     plugin: Plugin
-    settings: RecentEditedNotesSettings
+    settings: YWISettings
 
-    constructor(plugin: Plugin, settings: RecentEditedNotesSettings) {
+    constructor(plugin: Plugin, settings: YWISettings) {
         super(plugin.app, plugin)
         this.plugin = plugin
         this.settings = settings
