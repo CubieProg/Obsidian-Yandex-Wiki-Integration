@@ -11,6 +11,7 @@ export class YWISettings {
         session: any;
         displayTitle: boolean;
         saveSession: boolean;
+        exportFormats: string[];
     }
 
     constructor(plugin: Plugin) {
@@ -20,6 +21,11 @@ export class YWISettings {
     public async load() {
         const data = await this.plugin.loadData()
         this.data = data
+
+        if (!(this.data.exportFormats instanceof Array) || this.data.exportFormats.length <= 0) {
+            this.data.exportFormats = ["md"]
+            console.log("Default setting formats")
+        }
     }
 
     public async save() {
@@ -34,6 +40,11 @@ export class YWISettings {
             this.data.session = session;
             await this.save()
         }
+    }
+
+    public async setHomeSlug(slug: string[]) {
+        this.data.vaultSlug = slug.join("/")
+        await this.save()
     }
 
     public async deleteSession() {

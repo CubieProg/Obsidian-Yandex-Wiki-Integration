@@ -32,17 +32,22 @@ import { Plugin } from 'obsidian';
 
 
 type LoginButtonType = {
-    plugin: Plugin
+    plugin?: Plugin,
+    onParentClick?: Function
+    setOnParentClick?: Function
 }
 
 
-export const LoginButton = () => {
+export const LoginButton = ({ onParentClick, setOnParentClick }: LoginButtonType) => {
     const [buttonText, setButtonText] = useState('Submit');
     const [isRun, setIsRun] = useState(false);
     const context = useContext(YwIContext);
 
     const [subId,] = useState("LoginButtonSub")
     const [convId,] = useState("TreeConverter")
+
+    // this.getAlert = this.getAlert.bind(this);
+
 
     const foo = (ev: Event) => {
         console.log(`Callbacking an event: ${ev}`)
@@ -156,10 +161,11 @@ export const LoginButton = () => {
             className='widget-icon'
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
-            width="24px"
+            width="20px"
             viewBox="0 0 24 24"
             strokeWidth={0}
             stroke="currentColor"
+            opacity={0.85}
             onClick={handleClick}
         >
             <path id="login_path"

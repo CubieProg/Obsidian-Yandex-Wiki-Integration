@@ -64,11 +64,23 @@ If your plugin does not need CSS, delete this file.
     background: rgba(0, 0, 0, 0.0);
 }
 
+
+.slugTreeNodeContainer {
+    border-color: blueviolet;
+    border-width: 1;
+    border: solid;
+
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
 .treeNodeContainer {
     margin: 0;
     padding-top: 5;
     padding-bottom: 5;
     width: "max-content";
+    border-radius: 4px;
     /* opacity: 0.85; */
 }
 
@@ -81,7 +93,7 @@ If your plugin does not need CSS, delete this file.
 }
 
 
-.treeNodeContainer:active  {
+.treeNodeContainer:active {
     background-color: rgb(200, 200, 200);
     color: black;
     opacity: 1;
@@ -89,6 +101,7 @@ If your plugin does not need CSS, delete this file.
     /* background-color: rgb(255, 111, 111); */
     /* opacity: 0.725; */
 }
+
 /* 
 .treeNavArrow
  */
@@ -102,11 +115,41 @@ If your plugin does not need CSS, delete this file.
 }
 
 
-.treeNavArrow:active  {
+.treeNavArrow:active {
     background-color: rgb(200, 200, 200);
     color: black;
     opacity: 1;
     border-radius: 4px;
+    /* width:  */
+    /* background-color: rgb(255, 111, 111); */
+    /* opacity: 0.725; */
+}
+
+
+/* style={{
+    width: 30,
+    height: 26,
+    background: "red",
+    padding: "4px 6px",
+    marginLeft: 4
+}} */
+.NavHeaderIcon {
+    /* background: red; */
+    border-radius: 4px;
+}
+
+
+.NavHeaderIcon:hover {
+    background-color: rgb(228, 228, 228);
+    color: black;
+    opacity: 1;
+}
+
+
+.NavHeaderIcon:active {
+    background-color: rgb(200, 200, 200);
+    color: black;
+    opacity: 1;
     /* width:  */
     /* background-color: rgb(255, 111, 111); */
     /* opacity: 0.725; */

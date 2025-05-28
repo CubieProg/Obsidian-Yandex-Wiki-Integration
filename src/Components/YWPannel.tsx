@@ -7,6 +7,8 @@ import { YwIContext, YwIContextData } from "../Model/YWIContext"
 
 import { IYWIPlugin } from '../Main/IYWIPlugin'
 
+import { YWINavHeader } from './YWINavHeader'
+
 // const YwIContext = createContext(Object.create(null));
 
 //  | View | <=> | ViewModel | <=> | Model |
@@ -88,11 +90,49 @@ export const YWPannel = ({ plugin }: YWIPannelType) => {
 
     // plugin.app.vault.trigger("session-fetch", 321)
 
+
+
+    // return (
+    //     <div style={{
+    //         display: "flex",
+    //         flexDirection: "column",
+    //         minHeight: "150px",
+    //         maxHeight: "100%",
+    //         border: "1px solid red"
+    //     }}>
+    //         <div style={{
+    //             height: "15px",
+    //             backgroundColor: "yellow"
+    //         }}></div>
+    //         <div style={{
+    //             flexGrow: 1,
+    //             backgroundColor: "green",
+    //             overflowY: "scroll"
+    //         }}>
+    //             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error officia, perferendis sed ipsam quae illo voluptas voluptate, obcaecati pariatuLorem ipsum dolor sit amet, consectetur adipisicing elit.
+    //             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error officia, perferendis sed ipsam quae illo voluptas voluptate, obcaecati pariatuLorem ipsum dolor sit amet, consectetur adipisicing elit.
+    //             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error officia, perferendis sed ipsam quae illo voluptas voluptate, obcaecati pariatuLorem ipsum dolor sit amet, consectetur adipisicing elit.
+    //             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error officia, perferendis sed ipsam quae illo voluptas voluptate, obcaecati pariatuLorem ipsum dolor sit amet, consectetur adipisicing elit.
+    //             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error officia, perferendis sed ipsam quae illo voluptas voluptate, obcaecati pariatuLorem ipsum dolor sit amet, consectetur adipisicing elit.
+    //             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error officia, perferendis sed ipsam quae illo voluptas voluptate, obcaecati pariatuLorem ipsum dolor sit amet, consectetur adipisicing elit.
+    //         </div>
+    //     </div >
+    // )
+
+
+
     return (
         <YwIContext.Provider value={value}>
-            <LoginButton />
-            {/* <TreeView /> */}
-            <LazyTreeView />
+            <div style={{
+                display: "flex",
+                flexDirection: "column",
+                minHeight: "150px",
+                maxHeight: "100%",
+                // border: "1px solid red"
+            }}>
+                <YWINavHeader />
+                <LazyTreeView />
+            </div>
         </YwIContext.Provider>
     )
 }

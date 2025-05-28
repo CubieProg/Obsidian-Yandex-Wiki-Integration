@@ -161,7 +161,8 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 	private registerEvents() {
 		const eventsMap = new Map<string, Function>([
 			["yandex-wiki-integration:session-fetch", async (data: any) => this.settings.registerSession(data)],
-			["yandex-wiki-integration:get-wiki-page", async (data: any) => this.openYWPage(data)]
+			["yandex-wiki-integration:get-wiki-page", async (data: any) => this.openYWPage(data)],
+			["yandex-wiki-integration:set-home-slug", async (data: any) => this.settings.setHomeSlug(data)]
 		])
 
 		// Ругается хуй пойми на что. Надо нормальную обёртку делать

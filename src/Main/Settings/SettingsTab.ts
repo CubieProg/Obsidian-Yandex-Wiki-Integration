@@ -24,8 +24,8 @@ export class YWISettingsTab extends PluginSettingTab {
         containerEl.empty()
 
         new obsidian.Setting(containerEl)
-            .setName('Vault Slug')
-            .setDesc('Slug, куда будут выгружаться файлы из Obsidian в Yandex Wiki')
+            .setName('Домашняя директория')
+            .setDesc('Директория, куда будут выгружаться файлы из Obsidian в Yandex Wiki (Нужно указывать Slug)')
             .addText((text: TextComponent) =>
                 text
                     .setValue(this.settings.data.vaultSlug.toString())
@@ -34,6 +34,22 @@ export class YWISettingsTab extends PluginSettingTab {
                         await this.settings.save()
                     })
             )
+
+        new obsidian.Setting(containerEl)
+            .setName('Форматы экспорта')
+            .setDesc('Форматы, которые будут экспортироваться в Yandex Wiki. Форматы указываются без точек, через пробел. Пример: "md json txt"')
+            .addText((text: TextComponent) => {
+                try {
+                    text.setValue(this.settings.data.exportFormats.join(" "))
+                } catch {
+                    text.setValue("md")
+                }
+
+                text.onChange(async (value: string) => {
+                    this.settings.data.exportFormats = value.length > 0 ? value.split(" ") : []
+                    await this.settings.save()
+                })
+            })
 
         new obsidian.Setting(containerEl)
             .setName('Режим отображения')
@@ -55,9 +71,10 @@ export class YWISettingsTab extends PluginSettingTab {
                     dropDown.setValue(default_value)
                 }
             });
+
         new obsidian.Setting(containerEl)
             .setName('Отображать название страницы')
-            .setDesc('При открытии страницы в Yandex Wiki будет отображаться её название в верху')
+            .setDesc('При открытии страницы в Yandex Wiki будет отображаться её название сверху')
             .addToggle((toggle: ToggleComponent) =>
                 toggle
                     .setValue(this.settings.data.displayTitle)
@@ -66,6 +83,7 @@ export class YWISettingsTab extends PluginSettingTab {
                         await this.settings.save()
                     })
             )
+
         new obsidian.Setting(containerEl)
             .setName('Сохранять сесию')
             .setDesc('Сессия в Yandex Wiki будет сохраняться в локальнных файлах')

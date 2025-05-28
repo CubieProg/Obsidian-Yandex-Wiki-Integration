@@ -3,13 +3,18 @@
 import { v4 as uuid } from 'uuid'
 import { TreeNodeType } from "src/Model/TreeType"
 
+import { HomeIcon, PathHomeIcon } from './HomeIcon'
+
 import {
     createContext,
     Dispatch,
     ReactNode,
     useContext,
     useReducer,
+    MouseEvent,
 } from 'react'
+
+import { Menu, Notice, } from 'obsidian';
 
 export type TreeViewState = Map<string, boolean>
 
@@ -41,6 +46,9 @@ export const TreeViewContext = createContext<TreeViewContextType>({
     selectedId: null,
     selectId: () => { },
 })
+
+
+
 
 
 
@@ -184,6 +192,10 @@ const isVaultSlugPart = (plugin: IYWIPlugin, node: TreeNodeType) => {
     return node.slug?.every((slug, index) => slug === plugin.settings.data.vaultSlug.split("/")[index])
 }
 
+const isVaultSlug = (plugin: IYWIPlugin, node: TreeNodeType) => {
+    return node.slug?.length === plugin.settings.data.vaultSlug.split("/").length && isVaultSlugPart(plugin, node)
+}
+
 // export const NodeView = ({ id, name, children }: TreeNodeType) => {
 export const NodeView = ({ node }: TreeNodeViewType) => {
     const { open, dispatch } = useContext(TreeViewContext)
@@ -206,6 +218,7 @@ export const NodeView = ({ node }: TreeNodeViewType) => {
             </div>
         )}
     </div>
+
 
     const unwrapCallback = async () => {
         const type = isOpen ? TreeViewActionTypes.CLOSE : TreeViewActionTypes.OPEN
@@ -243,6 +256,27 @@ export const NodeView = ({ node }: TreeNodeViewType) => {
 
     }, [childrensView]);
 
+    const handleMouseEvent = (e: MouseEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        console.log(e)
+
+
+        // Do something
+    };
+
+    let pathHomeIcon
+
+
+
+    // (isVaultSlugPart(plugin, node) ? <HomeIcon exactSlug={isVaultSlug(plugin, node)}
+    if (isVaultSlug(plugin, node) && isVaultSlugPart(plugin, node)) {
+        pathHomeIcon = <HomeIcon />
+    } else if (isVaultSlugPart(plugin, node)) {
+        pathHomeIcon = <PathHomeIcon />
+    } else {
+        pathHomeIcon = undefined
+    }
+
     return <li style={{ listStyleType: "none" }}>
         <div
             style={{
@@ -258,8 +292,31 @@ export const NodeView = ({ node }: TreeNodeViewType) => {
 
             // className='treeNodeContainer'
 
-            onContextMenu={async () => {
-                console.log("Right Click?")
+            onContextMenu={async (e: MouseEvent<HTMLDivElement>) => {
+                e.preventDefault();
+                const menu = new Menu();
+
+                menu.addItem((item) =>
+                    item
+                        .setTitle('Установить как рабочую директорию')
+                        .setIcon('lucide-home')
+                        .onClick(() => {
+                            // plugin.settings.setHomeSlug()
+                            plugin.app.vault.trigger("yandex-wiki-integration:set-home-slug", node.slug)
+                            // new Notice('Home Slug setted');
+                        })
+                );
+
+                menu.addItem((item) =>
+                    item
+                        .setTitle('Экспортировать хранилище сюда')
+                        .setIcon('lucide-import')
+                        .onClick(() => {
+                            new Notice('Exported');
+                        })
+                );
+
+                menu.showAtPosition({ x: e.screenX, y: e.screenY })
             }}
 
             onClick={async () => {
@@ -274,13 +331,19 @@ export const NodeView = ({ node }: TreeNodeViewType) => {
             <NavArrowView empty={!node.has_children} open={isOpen} onClick={unwrapCallback} />
 
             <div
+                // className={'treeNodeContainer' + (isVaultSlugPart(plugin, node) ? " slugTreeNodeContainer" : "")}
                 className='treeNodeContainer'
+
                 style={{
                     // width: 1111,//"max-content",
                     paddingLeft: 8,
                     paddingRight: 8,
                     paddingTop: 4,
                     paddingBottom: 4,
+                    // borderColor: 'transparent transparent rgb(120, 82, 238) transparent ',
+                    borderColor: 'rgba(120, 82, 238, 0.5)',
+                    borderWidth: 1
+
                     // display: "inline-block",
                     // height: "100%",
                     // float: "left",
@@ -294,15 +357,15 @@ export const NodeView = ({ node }: TreeNodeViewType) => {
 
                     // textDecoration: isVaultSlugPart(plugin, node) ? "underline rgb(120, 82, 238)" : ""
                 }}
-            >{node.name}
-                <div
+            >{node.name} {pathHomeIcon}
+                {/* <div
                     style={{
                         width: "100%",
                         height: 2.5,
                         background: isVaultSlugPart(plugin, node) ? "rgba(149, 113, 242, 0.4)" : "",
                     }}
-                >
-                </div></div>
+                ></div> */}
+            </div>
 
             {/* <div></div> */}
             {/* {node.name} */}
@@ -348,12 +411,22 @@ export const LazyTreeView = () => {
             selectId: onChange,
         }}
     >
-        <div style={{ marginLeft: -8 }}>
-            <ul style={{ fontSize: 13, color: "currentColor", opacity: 0.85, paddingLeft: 8 }}>
-                {navigationTree.map((node: any) => (
-                    <NodeView node={node} key={node.id} />
-                ))}
-            </ul>
-        </div>
-    </TreeViewContext.Provider>
+        <div
+            style={{
+                marginLeft: -8,
+                // overflowY: "scroll",
+                // height: "calc(100%)",
+                overflowY: "scroll",
+                flexGrow: 1,
+                marginRight: -12,
+                marginBottom: -32
+            }}
+        >
+        <ul style={{ fontSize: 13, color: "currentColor", opacity: 0.85, paddingLeft: 8 }}>
+            {navigationTree.map((node: any) => (
+                <NodeView node={node} key={node.id} />
+            ))}
+        </ul>
+    </div>
+    </TreeViewContext.Provider >
 }
