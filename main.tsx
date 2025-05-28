@@ -1,13 +1,14 @@
-import { WorkspaceLeaf, TFile, ViewState, addIcon, Plugin } from 'obsidian';
+import { WorkspaceLeaf, TFile, ViewState, addIcon, Plugin, Menu, getIconIds } from 'obsidian';
 
 import { YWISettings } from "./src/Main/Settings/Settings"
 import { YWISettingsTab } from "./src/Main/Settings/SettingsTab"
 import { YWIView } from "./src/Main/Components/YWIView"
+import { IYWIPlugin } from 'src/Main/IYWIPlugin';
 
 // Нотация.
 // 		YWI: Yandex Wiki Integration. Везде, где используется это сокращение, читать надо так.
 
-class YWIPlugin extends Plugin {
+class YWIPlugin extends Plugin implements IYWIPlugin {
 	settings: YWISettings;
 
 	static view_type_display_tab: string = "yandex-wiki-display-tab"
@@ -15,7 +16,81 @@ class YWIPlugin extends Plugin {
 	private display_file: TFile
 	private display_tab: WorkspaceLeaf
 
-	async openYWPage(data: string) {
+	async onload() {
+		addIcon('yandex-wiki-integration-icon',
+			`<text x="40%" y="70%" dominant-baseline="middle" text-anchor="middle" fill="currentColor" style="font: bold 56px sans-serif;">YW</text>  `);
+
+
+		// console.log(getIconIds())
+		this.settings = new YWISettings(this)
+		await this.settings.load()
+		this.addSettingTab(new YWISettingsTab(this, this.settings))
+
+		this.registerEvents()
+		this.registerCommands()
+
+		this.registerView(
+			YWIView.view_type_ywi,
+			(leaf) => new YWIView(leaf, this)
+		)
+
+
+		this.registerEvent(
+			this.app.workspace.on("file-menu", (menu: Menu, file, source) => {
+				menu.addSeparator()
+				menu.addItem((item) => {
+					item.setIcon("export-img")
+						.setTitle(`YWI: Экспорт в Yandex Wiki`)
+						.setSection("action")
+						.onClick((_) => {
+						});
+				});
+				menu.addItem((item) => {
+					item.setIcon("lucide-import")
+						.setTitle(`YWI: Экспорт в Yandex Wiki`)
+						.setSection("action")
+						.onClick((_) => {
+						});
+				});
+				menu.addItem((item) => {
+					item.setIcon("arrowenter")
+						.setTitle(`YWI: Экспорт в Yandex Wiki`)
+						.setSection("action")
+						.onClick((_) => {
+						});
+				});
+				menu.addItem((item) => {
+					item.setIcon("arrowtab")
+						.setTitle(`YWI: Экспорт в Yandex Wiki`)
+						.setSection("action")
+						.onClick((_) => {
+						});
+				});
+				// menu.addItem((item) => {
+				// 	item.setIcon("lucide-a-arrow-down")
+				// 		.setTitle(`YWI: Экспорт в Yandex Wiki`)
+				// 		.setSection("action")
+				// 		.onClick((_) => {
+				// 		});
+				// });
+				// menu.addItem((item) => {
+				// 	item.setIcon("lucide-a-arrow-up")
+				// 		.setTitle(`YWI: Экспорт в Yandex Wiki`)
+				// 		.setSection("action")
+				// 		.onClick((_) => {
+				// 		});
+				// });
+			})
+		);
+
+		this.activateView()
+	}
+
+	async onunload(): Promise<void> {
+		this.closeYWPage()
+	}
+
+	private async openYWPage(data: any) {
 		const [
 			display_tab,
 			display_file
@@ -26,7 +101,12 @@ class YWIPlugin extends Plugin {
 
 		if (display_tab == undefined) { return }
 
-		await this.app.vault.modify(display_file, data);
+		// let str2disp = this.settings.data.displayType === 'Markdown' ? data.content : data.html
+		// str2disp = `--- \n# ${data.title}\n --- \n` + str2disp
+
+		const str2disp = (this.settings.data.displayTitle ? `--- \n# ${data.title}\n --- \n` : ``) + (this.settings.data.displayType === 'Markdown' ? data.content : data.html)
+
+		await this.app.vault.modify(display_file, str2disp);
 		await display_tab.openFile(display_file)
 
 		let state: ViewState = display_tab.getViewState();
@@ -34,13 +114,11 @@ class YWIPlugin extends Plugin {
 		display_tab.setViewState(state)
 	}
 
-	async closeYWPage(): Promise<void> {
+	private async closeYWPage(): Promise<void> {
 		if (this.display_tab instanceof WorkspaceLeaf) {
-			// this.display_tab.view.unload()
 			this.display_tab.detach()
 		}
 	}
-
 
 	private async getOrCreateDisplayTab(): Promise<WorkspaceLeaf | undefined> {
 		if (this.display_tab instanceof WorkspaceLeaf) {
@@ -80,15 +158,20 @@ class YWIPlugin extends Plugin {
 		return file
 	}
 
-
 	private registerEvents() {
+		const eventsMap = new Map<string, Function>([
+			["yandex-wiki-integration:session-fetch", async (data: any) => this.settings.registerSession(data)],
+			["yandex-wiki-integration:get-wiki-page", async (data: any) => this.openYWPage(data)]
+		])
+
 		// Ругается хуй пойми на что. Надо нормальную обёртку делать
-		this.registerEvent(this.app.vault.on('yandex-wiki-integration:session-fetch', async (data: any) => {
-			this.settings.registerSession(data)
-		}));
-		this.registerEvent(this.app.vault.on('yandex-wiki-integration:get-wiki-page', async (data: string) => {
-			this.openYWPage(data)
-		}));
+		// UPD: был какой-то заворачиватель из третьего плагина. 
+		// 		Также, увидел, что интерфейс в апи обсидиана сделан только для обработки коллбэков с TFile
+		eventsMap.forEach((callback, event_name) => {
+			this.registerEvent(this.app.vault.on(event_name, async (data: any) => {
+				await callback(data)
+			}));
+		})
 	}
 
 	private registerCommands() {
@@ -100,30 +183,7 @@ class YWIPlugin extends Plugin {
 		});
 	}
 
-	async onload() {
-		addIcon('yandex-wiki-integration-icon',
-			`<text x="40%" y="70%" dominant-baseline="middle" text-anchor="middle" fill="currentColor" style="font: bold 56px sans-serif;">YW</text>  `);
-
-		this.settings = new YWISettings(this)
-		await this.settings.load()
-		this.addSettingTab(new YWISettingsTab(this, this.settings))
-
-		this.registerEvents()
-		this.registerCommands()
-
-		this.registerView(
-			YWIView.view_type_ywi,
-			(leaf) => new YWIView(leaf, this)
-
-		)
-		this.activateView()
-	}
-
-	async onunload(): Promise<void> {
-		this.closeYWPage()
-	}
-
-	async activateView() {
+	private async activateView() {
 		const { workspace } = this.app
 
 		let leaf = null

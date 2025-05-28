@@ -1,26 +1,20 @@
 import { Plugin, ItemView, WorkspaceLeaf } from "obsidian";
-import { StrictMode } from "react";
+import { JSX, StrictMode, useContext } from "react";
 import { Root, createRoot } from "react-dom/client";
 import { YWPannel } from "src/Components/YWPannel";
+import { IYWIPlugin } from '../IYWIPlugin'
 
 // const VIEW_TYPE_RECENT_EDITED_NOTES = 'recent-edited-notes-view-ts'
 export class YWIView extends ItemView {
     static view_type_ywi: string = 'recent-edited-notes-view-ts'
 
-    private plugin: Plugin;
-    private update_events: Array<string>;
+    private plugin: IYWIPlugin;
     private root: Root | null = null;
+    private childs: JSX.Element;
 
-    constructor(leaf: WorkspaceLeaf, plugin: Plugin) {
+    constructor(leaf: WorkspaceLeaf, plugin: IYWIPlugin) {
         super(leaf)
         this.plugin = plugin
-        this.update_events = [
-            'modify',
-            'rename',
-            'experience-third:save-settings',
-            'yandex-wiki-integration:session-fetch',
-            'yandex-wiki-integration:get-wiki-page'
-        ]
     }
 
     getViewType() {
@@ -36,7 +30,6 @@ export class YWIView extends ItemView {
     }
 
     async onOpen() {
-
         this.render()
     }
 
@@ -46,10 +39,12 @@ export class YWIView extends ItemView {
         const container = this.containerEl.children[1]
         this.root = createRoot(container);
 
+        this.childs = <StrictMode>
+            <YWPannel plugin={this.plugin} />
+        </StrictMode>
+
         this.root.render(
-            <StrictMode>
-                <YWPannel plugin={this.plugin} />
-            </StrictMode>
+            this.childs
         );
     }
 }

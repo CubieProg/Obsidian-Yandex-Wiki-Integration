@@ -1,13 +1,16 @@
-import { App, Plugin, PluginSettingTab, TextComponent } from 'obsidian';
-
+import { Plugin } from 'obsidian';
+import { YWISessionGlobalProvider } from "../../Model/YWIContext"
 
 export class YWISettings {
     private plugin: Plugin;
 
     data: {
         listLength: number;
-        homeSlug: string;
+        vaultSlug: string;
+        displayType: string;
         session: any;
+        displayTitle: boolean;
+        saveSession: boolean;
     }
 
     constructor(plugin: Plugin) {
@@ -16,27 +19,25 @@ export class YWISettings {
 
     public async load() {
         const data = await this.plugin.loadData()
-
-        console.log("Load Data")
-        console.log(data)
-
         this.data = data
-
-        console.log(this.data)
-
-        // this.data.listLength = data.listLength
-        // this.data.session = data.session
     }
 
     public async save() {
-        console.log("Save Data")
         await this.plugin.saveData(this.data)
         this.plugin.app.vault.trigger("experience-third:save-settings")
     }
 
+    public async registerSession(session: any, force: boolean = false) {
+        YWISessionGlobalProvider.data = session
 
-    public async registerSession(session: any) {
-        this.data.session = session;
+        if ((this.data.saveSession || force) && session != null) {
+            this.data.session = session;
+            await this.save()
+        }
+    }
+
+    public async deleteSession() {
+        this.data.session = null;
         await this.save()
     }
 }

@@ -1,19 +1,13 @@
-import { StrictMode, useState, useEffect, ReactElement } from 'react';
-import { createContext, useContext } from 'react';
-
+import { useState, createContext } from 'react';
 import { Plugin } from 'obsidian';
 
 import { LoginButton } from './LoginButton';
-
-import { CustomTree } from "./CustomTreeView"
 import { LazyTreeView } from "./LazyTreeView"
-
-
-
 import { YwIContext, YwIContextData } from "../Model/YWIContext"
 
-// const YwIContext = createContext(Object.create(null));
+import { IYWIPlugin } from '../Main/IYWIPlugin'
 
+// const YwIContext = createContext(Object.create(null));
 
 //  | View | <=> | ViewModel | <=> | Model |
 
@@ -66,7 +60,7 @@ class ViewModel {
 
 
 type YWIPannelType = {
-    plugin: Plugin
+    plugin: IYWIPlugin
 }
 
 export const YWPannel = ({ plugin }: YWIPannelType) => {

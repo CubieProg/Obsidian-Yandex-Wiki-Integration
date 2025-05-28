@@ -9,7 +9,7 @@ import { read } from 'node:fs'
 import { authtorize, check_session } from '../Authtorization/authtorize'
 // import { authtorize } from '../Authtorization/authtorize'
 
-import { YwIContext, YwIContextData } from "../Model/YWIContext"
+import { YwIContext } from "../Model/YWIContext"
 
 
 // import { action, observable, makeObservable } from 'mobx';

@@ -51,6 +51,7 @@ type NavLineType = {
 export const NavLineView = ({ navLineHeight }: NavLineType) => {
     return <div
         style={{
+            // marginLeft: 4,
             width: 15,
             height: navLineHeight,
             float: "left",
@@ -141,6 +142,9 @@ import { useRef, useState, useLayoutEffect, useEffect } from "react"
 import { YwIContext } from 'src/Model/YWIContext'
 
 import { getNavTreeNode, getYWPage } from '../Model/YWAPI/api'
+import { rgba } from 'framer-motion'
+import { Plugin } from 'obsidian'
+import { IYWIPlugin } from 'src/Main/IYWIPlugin'
 // import { motion, AnimatePresence } from 'framer-motion';
 
 type TreeNodeViewType = {
@@ -155,8 +159,6 @@ const addChilds = (tree: TreeNodeType[], slug: string[] | undefined, data: TreeN
     if (typeof slug === 'undefined') {
         return
     }
-
-    console.log("Searching on tree")
 
     let branch: TreeNodeType[] | undefined = tree
     let pointer = undefined
@@ -175,6 +177,11 @@ const addChilds = (tree: TreeNodeType[], slug: string[] | undefined, data: TreeN
     }
 
     pointer.children = data
+}
+
+const isVaultSlugPart = (plugin: IYWIPlugin, node: TreeNodeType) => {
+    // console.log()
+    return node.slug?.every((slug, index) => slug === plugin.settings.data.vaultSlug.split("/")[index])
 }
 
 // export const NodeView = ({ id, name, children }: TreeNodeType) => {
@@ -227,8 +234,13 @@ export const NodeView = ({ node }: TreeNodeViewType) => {
     }
 
     useLayoutEffect(() => {
-        const current: any = ref?.current           // так он не ругается
-        setNavLineHeight(current?.offsetHeight - 4);    // <= вот тут изначально был ```ref?.current?.offsetHeight```
+        const current: any = ref?.current               // так он не ругается
+        const height = current?.offsetHeight - 4        // <= вот тут изначально был ```ref?.current?.offsetHeight```
+
+        if (height > 0) {
+            setNavLineHeight(height);
+        }
+
     }, [childrensView]);
 
     return <li style={{ listStyleType: "none" }}>
@@ -246,16 +258,16 @@ export const NodeView = ({ node }: TreeNodeViewType) => {
 
             // className='treeNodeContainer'
 
+            onContextMenu={async () => {
+                console.log("Right Click?")
+            }}
+
             onClick={async () => {
-                const parentSlug: String | undefined = node.slug?.join("/") // нужно что-то добавлять
+                const parentSlug: String | undefined = node.slug?.join("/")
 
                 if (typeof parentSlug === 'string') {
-                    console.log("get page puk-sren`k")
                     const page_data = await getYWPage(sessionData, parentSlug)
-                    console.log(page_data)
-
-                    // plugin.app.vault.trigger("yandex-wiki-integration:get-wiki-page", page_data.content)
-                    plugin.app.vault.trigger("yandex-wiki-integration:get-wiki-page", page_data.html)
+                    plugin.app.vault.trigger("yandex-wiki-integration:get-wiki-page", page_data)
                 }
             }}
         >
@@ -267,29 +279,40 @@ export const NodeView = ({ node }: TreeNodeViewType) => {
                     // width: 1111,//"max-content",
                     paddingLeft: 8,
                     paddingRight: 8,
-                    paddingTop: 5,
-                    paddingBottom: 5,
+                    paddingTop: 4,
+                    paddingBottom: 4,
                     // display: "inline-block",
                     // height: "100%",
                     // float: "left",
+                    // color: 'rgb(120, 82, 238)'
+
+
+                    // background: isVaultSlugPart(plugin, node) ? "rgba(149, 113, 242, 0.4)" : "",
+                    // borderRadius: 4,
+                    // borderColor: "red",
+                    // borderWidth: 2
+
+                    // textDecoration: isVaultSlugPart(plugin, node) ? "underline rgb(120, 82, 238)" : ""
                 }}
-            >{node.name}</div>
+            >{node.name}
+                <div
+                    style={{
+                        width: "100%",
+                        height: 2.5,
+                        background: isVaultSlugPart(plugin, node) ? "rgba(149, 113, 242, 0.4)" : "",
+                    }}
+                >
+                </div></div>
+
             {/* <div></div> */}
             {/* {node.name} */}
         </div>
-
         {node.children?.length && isOpen &&
             childrensView
         }
 
     </li>
 }
-
-
-
-// https://conf-prfn.org/app?bc09793126d2b573b13447840fafbf13
-
-// conf-prfn@yandex.ru s
 
 export function treeViewReducer(
     state: TreeViewState,
@@ -306,8 +329,6 @@ export function treeViewReducer(
             throw new Error(`Tree View Reducer received an unknown action ${action}`)
     }
 }
-
-// AnotherSimpleUser@yandex.ru
 
 export const LazyTreeView = () => {
     const [open, dispatch] = useReducer(

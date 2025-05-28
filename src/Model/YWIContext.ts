@@ -17,3 +17,7 @@ export const YwIContextData = {
 
     plugin: null
 }
+
+export const YWISessionGlobalProvider = {
+    data: null
+}
