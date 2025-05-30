@@ -41,7 +41,7 @@ export class YWISettings {
     public async registerSession(session: any, force: boolean = false) {
         YWISessionGlobalProvider.data = session
 
-        if ((this.data.saveSession || force) && session != null) {
+        if ((this.data.saveSession || force) && session !== null) {
             this.data.session = session;
             await this.save()
         }

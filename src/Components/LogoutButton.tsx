@@ -16,6 +16,11 @@ export const LogoutButton = () => {
 
 
     const handleClick = async () => {
+        if (context.sessionData) {
+            context.setSessionData(undefined)
+            context.plugin.app.vault.trigger("yandex-wiki-integration:logout")
+        }
+        context.setNavigationTree([])
     };
 
     return (// у button был стиль. Удалил её только по этому

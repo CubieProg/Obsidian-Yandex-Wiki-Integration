@@ -24,12 +24,6 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 		progress: 0.0
 	}
 
-	trc = 0.0
-
-	trcF() {
-		this.trc += 1.15
-	}
-
 	async onload() {
 		addIcon('yandex-wiki-integration-icon',
 			`<text x="40%" y="70%" dominant-baseline="middle" text-anchor="middle" fill="currentColor" style="font: bold 56px sans-serif;">YW</text>  `);
@@ -47,9 +41,6 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 			YWIView.view_type_ywi,
 			(leaf) => new YWIView(leaf, this)
 		)
-
-		// uploadFile(this.settings.data.vaultSlug.split("/"), "Academic English", this)
-
 
 		this.activateView()
 	}
@@ -133,7 +124,8 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 			["yandex-wiki-integration:set-home-slug", async (data: any) => this.settings.setHomeSlug(data)],
 			["yandex-wiki-integration:upload", async (data: string[]) => uploadFile(data.join("/"), null, this)],
 			["yandex-wiki-integration:upload-to-home", async (data: string[]) => uploadFile(this.settings.data.vaultSlug, null, this)],
-			["yandex-wiki-integration:test", async (data: any) => {console.log(data)}]
+			["yandex-wiki-integration:test", async (data: any) => { console.log(data) }],
+			["yandex-wiki-integration:logout", async (data: any) => this.settings.registerSession(undefined, true)]
 		])
 
 		this.registerEvent(
@@ -160,6 +152,18 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 	}
 
 	private registerCommands() {
+		this.addCommand({
+			id: 'login',
+			name: 'Login',
+			callback: () => {
+			}
+		});
+		this.addCommand({
+			id: 'logout',
+			name: 'Logout',
+			callback: () => {
+			}
+		});
 		this.addCommand({
 			id: 'upload-vault',
 			name: 'Upload Vault',
