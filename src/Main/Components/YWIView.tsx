@@ -39,7 +39,6 @@ export class YWIView extends ItemView {
         const container = this.containerEl.children[1]
         this.root = createRoot(container);
 
-
         this.childs = <StrictMode>
             <YWPannel plugin={this.plugin} />
         </StrictMode>

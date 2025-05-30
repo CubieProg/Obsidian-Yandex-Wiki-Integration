@@ -301,6 +301,7 @@ export const NodeView = ({ node }: TreeNodeViewType) => {
                         .setTitle('Установить как рабочую директорию')
                         .setIcon('lucide-home')
                         .onClick(() => {
+
                             // plugin.settings.setHomeSlug()
                             plugin.app.vault.trigger("yandex-wiki-integration:set-home-slug", node.slug)
                             // new Notice('Home Slug setted');
@@ -312,6 +313,8 @@ export const NodeView = ({ node }: TreeNodeViewType) => {
                         .setTitle('Экспортировать хранилище сюда')
                         .setIcon('lucide-import')
                         .onClick(() => {
+                            // yandex-wiki-integration:upload
+                            plugin.app.vault.trigger("yandex-wiki-integration:upload", node.slug)
                             new Notice('Exported');
                         })
                 );
@@ -422,11 +425,11 @@ export const LazyTreeView = () => {
                 marginBottom: -32
             }}
         >
-        <ul style={{ fontSize: 13, color: "currentColor", opacity: 0.85, paddingLeft: 8 }}>
-            {navigationTree.map((node: any) => (
-                <NodeView node={node} key={node.id} />
-            ))}
-        </ul>
-    </div>
+            <ul style={{ fontSize: 13, color: "currentColor", opacity: 0.85, paddingLeft: 8 }}>
+                {navigationTree.map((node: any) => (
+                    <NodeView node={node} key={node.id} />
+                ))}
+            </ul>
+        </div>
     </TreeViewContext.Provider >
 }

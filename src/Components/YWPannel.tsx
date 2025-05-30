@@ -73,6 +73,9 @@ export const YWPannel = ({ plugin }: YWIPannelType) => {
     const [navigationTree, setNavigationTree] = useState(YwIContextData.navigationTree)
     const [eventManager, setEventManager] = useState(YwIContextData.eventManager)
     const [sessionData, setSessionData] = useState(YwIContextData.sessionData)
+
+    const [uploadProgress, setUploadProgress] = useState(YwIContextData.sessionData)
+
     // setNavigationTree(navigationTree)
 
     const value = {
@@ -82,44 +85,6 @@ export const YWPannel = ({ plugin }: YWIPannelType) => {
 
         plugin
     };
-
-
-    const plugin_ref = plugin
-
-    // console.log(YwIContext.Provider)
-
-    // plugin.app.vault.trigger("session-fetch", 321)
-
-
-
-    // return (
-    //     <div style={{
-    //         display: "flex",
-    //         flexDirection: "column",
-    //         minHeight: "150px",
-    //         maxHeight: "100%",
-    //         border: "1px solid red"
-    //     }}>
-    //         <div style={{
-    //             height: "15px",
-    //             backgroundColor: "yellow"
-    //         }}></div>
-    //         <div style={{
-    //             flexGrow: 1,
-    //             backgroundColor: "green",
-    //             overflowY: "scroll"
-    //         }}>
-    //             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error officia, perferendis sed ipsam quae illo voluptas voluptate, obcaecati pariatuLorem ipsum dolor sit amet, consectetur adipisicing elit.
-    //             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error officia, perferendis sed ipsam quae illo voluptas voluptate, obcaecati pariatuLorem ipsum dolor sit amet, consectetur adipisicing elit.
-    //             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error officia, perferendis sed ipsam quae illo voluptas voluptate, obcaecati pariatuLorem ipsum dolor sit amet, consectetur adipisicing elit.
-    //             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error officia, perferendis sed ipsam quae illo voluptas voluptate, obcaecati pariatuLorem ipsum dolor sit amet, consectetur adipisicing elit.
-    //             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error officia, perferendis sed ipsam quae illo voluptas voluptate, obcaecati pariatuLorem ipsum dolor sit amet, consectetur adipisicing elit.
-    //             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error officia, perferendis sed ipsam quae illo voluptas voluptate, obcaecati pariatuLorem ipsum dolor sit amet, consectetur adipisicing elit.
-    //         </div>
-    //     </div >
-    // )
-
-
 
     return (
         <YwIContext.Provider value={value}>

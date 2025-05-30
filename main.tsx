@@ -3,7 +3,8 @@ import { WorkspaceLeaf, TFile, ViewState, addIcon, Plugin, Menu, getIconIds } fr
 import { YWISettings } from "./src/Main/Settings/Settings"
 import { YWISettingsTab } from "./src/Main/Settings/SettingsTab"
 import { YWIView } from "./src/Main/Components/YWIView"
-import { IYWIPlugin } from 'src/Main/IYWIPlugin';
+import { IYWIPlugin } from './src/Main/IYWIPlugin';
+import { uploadFile } from './src/Model/YWAPI/api';
 
 // Нотация.
 // 		YWI: Yandex Wiki Integration. Везде, где используется это сокращение, читать надо так.
@@ -34,54 +35,8 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 			(leaf) => new YWIView(leaf, this)
 		)
 
+		// uploadFile(this.settings.data.vaultSlug.split("/"), "Academic English", this)
 
-		this.registerEvent(
-			this.app.workspace.on("file-menu", (menu: Menu, file, source) => {
-				menu.addSeparator()
-				menu.addItem((item) => {
-					item.setIcon("export-img")
-						.setTitle(`YWI: Экспорт в Yandex Wiki`)
-						.setSection("action")
-						.onClick((_) => {
-						});
-				});
-				menu.addItem((item) => {
-					item.setIcon("lucide-import")
-						.setTitle(`YWI: Экспорт в Yandex Wiki`)
-						.setSection("action")
-						.onClick((_) => {
-						});
-				});
-				menu.addItem((item) => {
-					item.setIcon("arrowenter")
-						.setTitle(`YWI: Экспорт в Yandex Wiki`)
-						.setSection("action")
-						.onClick((_) => {
-						});
-				});
-				menu.addItem((item) => {
-					item.setIcon("arrowtab")
-						.setTitle(`YWI: Экспорт в Yandex Wiki`)
-						.setSection("action")
-						.onClick((_) => {
-						});
-				});
-				// menu.addItem((item) => {
-				// 	item.setIcon("lucide-a-arrow-down")
-				// 		.setTitle(`YWI: Экспорт в Yandex Wiki`)
-				// 		.setSection("action")
-				// 		.onClick((_) => {
-				// 		});
-				// });
-				// menu.addItem((item) => {
-				// 	item.setIcon("lucide-a-arrow-up")
-				// 		.setTitle(`YWI: Экспорт в Yandex Wiki`)
-				// 		.setSection("action")
-				// 		.onClick((_) => {
-				// 		});
-				// });
-			})
-		);
 
 		this.activateView()
 	}
@@ -160,10 +115,33 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 
 	private registerEvents() {
 		const eventsMap = new Map<string, Function>([
-			["yandex-wiki-integration:session-fetch", async (data: any) => this.settings.registerSession(data)],
+			["yandex-wiki-integration:session-fetch", async (data: any) => {
+				this.settings.registerSession(data)
+			}],
 			["yandex-wiki-integration:get-wiki-page", async (data: any) => this.openYWPage(data)],
-			["yandex-wiki-integration:set-home-slug", async (data: any) => this.settings.setHomeSlug(data)]
+			["yandex-wiki-integration:set-home-slug", async (data: any) => this.settings.setHomeSlug(data)],
+			["yandex-wiki-integration:upload", async (data: string[]) => uploadFile(data.join("/"), null, this)]
+
 		])
+
+
+		this.registerEvent(
+			this.app.workspace.on("file-menu", (menu: Menu, file, source) => {
+				menu.addSeparator()
+				menu.addItem((item) => {
+					item.setIcon("lucide-import")
+						.setTitle(`YWI: Экспорт в Yandex Wiki`)
+						.onClick((_) => {
+							console.log(source)
+							console.log(file)
+
+							// export async function uploadFile(slug: string[], filePath: string, plugin: IYWIPlugin)
+							// uploadFile(this.settings.data.vaultSlug.split("/"), "Academic English", this)
+							uploadFile(this.settings.data.vaultSlug, file, this)
+						});
+				});
+			})
+		);
 
 		// Ругается хуй пойми на что. Надо нормальную обёртку делать
 		// UPD: был какой-то заворачиватель из третьего плагина. 
