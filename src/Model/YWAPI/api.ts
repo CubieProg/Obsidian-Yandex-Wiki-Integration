@@ -221,6 +221,10 @@ export async function upload(
     }
 }
 
+
+
+import { IUploadTransaction } from './UploadTransaction'
+
 export async function uploadFiles(settings: YWISettings, parentSlug: string, files: TFile[], fileContents: string[], baseSlug: string | undefined) {
     if (files.length !== fileContents.length) { throw new Error("Количество файлов должно совпадать с количеством содержимого") }
 
@@ -238,7 +242,7 @@ export async function uploadFiles(settings: YWISettings, parentSlug: string, fil
         const title = files[i].name
 
         await upload(settings, settings.data.session, slug, title, fileContents[i])
-        
+
         uploadedBytes += files[i].stat.size
 
         console.log(i, "/", files.length, "; Bytes:", uploadedBytes, "/", bytesAtAll)

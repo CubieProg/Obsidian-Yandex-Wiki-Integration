@@ -24,6 +24,11 @@ export class YWISettingsTab extends PluginSettingTab {
         containerEl.empty()
 
         new obsidian.Setting(containerEl)
+            .addProgressBar((pBar: obsidian.ProgressBarComponent) =>
+                pBar.setValue(50)
+            )
+
+        new obsidian.Setting(containerEl)
             .setName('Домашняя директория')
             .setDesc('Директория, куда будут выгружаться файлы из Obsidian в Yandex Wiki (Нужно указывать Slug)')
             .addText((text: TextComponent) =>

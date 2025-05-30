@@ -3,22 +3,22 @@ import { YwIContext } from "../Model/YWIContext"
 import { Plugin } from 'obsidian';
 
 
+
 type UploadButtonType = {
     plugin?: Plugin,
     onParentClick?: Function
     setOnParentClick?: Function
 }
-
-
 export const UploadButton = () => {
     const [isRun, setIsRun] = useState(false);
-    const context = useContext(YwIContext);
-
+    const { plugin } = useContext(YwIContext);
 
     const handleClick = async () => {
+        // plugin.app.vault.trigger("yandex-wiki-integration:upload-to-home")
+        plugin.app.vault.trigger("yandex-wiki-integration:test")
     };
 
-    return (// у button был стиль. Удалил её только по этому
+    return (
         <svg
             className='widget-icon'
             xmlns="http://www.w3.org/2000/svg"
