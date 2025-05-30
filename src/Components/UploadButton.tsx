@@ -14,8 +14,7 @@ export const UploadButton = () => {
     const { plugin } = useContext(YwIContext);
 
     const handleClick = async () => {
-        // plugin.app.vault.trigger("yandex-wiki-integration:upload-to-home")
-        plugin.app.vault.trigger("yandex-wiki-integration:test")
+        plugin.app.vault.trigger("yandex-wiki-integration:upload-to-home")
     };
 
     return (

@@ -1,10 +1,5 @@
 import {
-    createContext,
-    Dispatch,
-    ReactNode,
     useContext,
-    useReducer,
-    MouseEvent,
     useEffect,
     useLayoutEffect,
     useState,
@@ -13,61 +8,18 @@ import {
 
 import { YwIContext } from 'src/Model/YWIContext'
 
-export const ProgressBar_ = () => {
-    const { navigationTree, setNavigationTree, sessionData, plugin } = useContext(YwIContext)
-
-    const [count, setCount] = useState(0);
-    useEffect(() => {
-        console.log("useEffect runs");
-
-        const interval = setInterval(() => {
-            setCount((prevCount) => prevCount + 1);
-            setCount(count + 1);
-            console.log(count)
-        }, 1000);
-
-        return () => clearInterval(interval);
-    }, []);
-
-    return <div></div>
-}
-
-
 export const ProgressBar = () => {
-    const [progress, setProgress] = useState(0.5);
-    const [fileName, setFileName] = useState("Главная страница");
+    const [progress, setProgress] = useState(0.0);
+    const [fileName, setFileName] = useState("");
     const { plugin } = useContext(YwIContext)
     const [progressBarWidth, setProgressBarWidth] = useState(0);
 
     const [currentWidth, setCurrentWidth] = useState(progress * progressBarWidth);
 
     const ref = useRef(null);
+    const ref1 = useRef(null);
 
-
-    // Контролим ширину компонента
-    useLayoutEffect(() => {
-        const current: any = ref?.current
-        const width = current?.offsetWidth
-
-        if (width > 0) {
-            setProgressBarWidth(width);
-        }
-    }, []);
-
-    // Прослушиваем изменения
-    // useEffect(() => {
-    //     console.log("useEffect runs");
-
-    //     const interval = setInterval(() => {
-    //         setCount((prevCount) => prevCount + 1);
-    //         setCount(count + 1);
-    //         console.log(count)
-    //     }, 1000);
-
-    //     return () => clearInterval(interval);
-    // }, []);
-
-    return <div>
+    const component = <div>
         <div style={{ fontSize: 13, color: "currentColor", opacity: 0.6, paddingBottom: 8 }}>
             {fileName}
         </div>
@@ -88,6 +40,7 @@ export const ProgressBar = () => {
             ></div>
 
             <div
+                ref={ref1}
                 style={{
                     position: "absolute",
                     top: 0,
@@ -100,4 +53,25 @@ export const ProgressBar = () => {
             ></div>
         </div>
     </div>
+
+    useEffect(() => {
+        // Контролим ширину компонента
+        const current: any = ref?.current
+        const width = current?.offsetWidth
+
+        if (width > 0) {
+            setProgressBarWidth(width);
+        }
+
+        // Прослушиваем изменения
+        const interval = setInterval(() => {
+            setProgress(v => plugin.transaction.progress);
+            setCurrentWidth(v => plugin.transaction.progress * progressBarWidth)
+            setFileName(v => plugin.transaction.fileName);
+
+        }, 100);
+        return () => clearInterval(interval);
+    }, [component]);
+
+    return component
 };

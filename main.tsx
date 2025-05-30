@@ -5,9 +5,8 @@ import { YWISettingsTab } from "./src/Main/Settings/SettingsTab"
 import { YWIView } from "./src/Main/Components/YWIView"
 import { IYWIPlugin } from './src/Main/IYWIPlugin';
 import { uploadFile } from './src/Model/YWAPI/api';
+import { TUploadTransaction } from './src/Model/YWAPI/UploadTransaction'
 
-
-import { IUploadTransaction } from './src/Model/YWAPI/UploadTransaction'
 
 // Нотация.
 // 		YWI: Yandex Wiki Integration. Везде, где используется это сокращение, читать надо так.
@@ -20,10 +19,15 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 	private display_file: TFile
 	private display_tab: WorkspaceLeaf
 
-	transaction: number = 123
+	transaction: TUploadTransaction = {
+		fileName: "",
+		progress: 0.0
+	}
 
-	public transactionF() {
-		this.transaction += 1
+	trc = 0.0
+
+	trcF() {
+		this.trc += 1.15
 	}
 
 	async onload() {
@@ -129,17 +133,7 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 			["yandex-wiki-integration:set-home-slug", async (data: any) => this.settings.setHomeSlug(data)],
 			["yandex-wiki-integration:upload", async (data: string[]) => uploadFile(data.join("/"), null, this)],
 			["yandex-wiki-integration:upload-to-home", async (data: string[]) => uploadFile(this.settings.data.vaultSlug, null, this)],
-			["yandex-wiki-integration:test", async (data: any) => {
-				console.log(data)
-				// new Notice("YWI: Начался экспорт. \n Новая строка \n очень сцуко большая строка мать её а ну иди сюда гавно собачье члено вонючий хочешь меня трахнуть я тебя сам трахну а ну иди сюда ты говно")
-
-				const folders = 5
-				const files = 51
-				const bytes = 453032
-				new Notice(`YWI: Начался экспорт. \nПапок для передачи: ${folders}\nФайлов для передачи: ${files}\nОбъём: ${bytes} байт`)
-				new Notice("YWI: Экспорт законичлся")
-			}]
-
+			["yandex-wiki-integration:test", async (data: any) => {console.log(data)}]
 		])
 
 		this.registerEvent(

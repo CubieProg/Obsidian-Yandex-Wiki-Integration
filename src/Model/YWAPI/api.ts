@@ -1,13 +1,11 @@
 import { convertHeaders } from '../../Authtorization/authtorize'
-import { requestUrl, Vault, TFile, RequestUrlResponse, TAbstractFile } from "obsidian";
+import { requestUrl, Vault, TFile, RequestUrlResponse, TAbstractFile, Notice } from "obsidian";
 import { v4 as uuid } from 'uuid'
 
 import { TreeNodeType } from "../TreeType";
 import { IYWIPlugin } from 'src/Main/IYWIPlugin';
 import { YWISettings } from 'src/Main/Settings/Settings'
 import { transliterate } from './transliterate'
-
-
 
 const formatFilter = (allowed: string[], cmp: string) => {
     return (allowed.includes(cmp))
@@ -16,61 +14,6 @@ const formatFilter = (allowed: string[], cmp: string) => {
 const pathFilter = (path: string, cmp: string) => {
     if (path === "__path__") { return true }
     return cmp.startsWith(path)
-}
-
-
-type treeNode = {
-    name: string
-    array_index: number | null
-    children: treeNode[]
-}
-
-function convertFile(file: TFile, index: number | null = null): treeNode {
-    return {
-        name: file.name,
-        array_index: index,
-        children: []
-    }
-}
-
-function getOrGenerateBranch(file: TFile, tree: treeNode): treeNode {
-    const path = file.path.split("/")
-    path.pop()
-
-    let pointer = tree
-
-    for (let step in path) {
-        let next_step = pointer.children.find((node) => node.name === step)
-
-        if (next_step) {
-            pointer = next_step
-        } else {
-            const node: treeNode = {
-                name: step,
-                array_index: null,
-                children: [],
-            }
-            pointer.children.push(node)
-            pointer = node
-        }
-    }
-
-    return pointer
-}
-
-function generateTree(files: TFile[]) {
-    let tree: treeNode = {
-        name: "root",
-        array_index: null, // индекс в массиве что бы быстрее доставать
-        children: []
-    }
-
-    files.forEach((file, index) => {
-        let branch = getOrGenerateBranch(file, tree)
-        branch.children.push(convertFile(file, index))
-    })
-
-    return tree
 }
 
 async function createPage(session_data: any, slug: string, title: string) {
@@ -88,8 +31,6 @@ async function createPage(session_data: any, slug: string, title: string) {
         subscribeMe: false,
         title: title,
     }
-
-    console.log("Create page", parentSlug, slug, title)
 
     const headers = convertHeaders(
         session_data,
@@ -223,9 +164,16 @@ export async function upload(
 
 
 
-import { IUploadTransaction } from './UploadTransaction'
+import { TUploadTransaction } from './UploadTransaction'
 
-export async function uploadFiles(settings: YWISettings, parentSlug: string, files: TFile[], fileContents: string[], baseSlug: string | undefined) {
+export async function uploadFiles(
+    settings: YWISettings,
+    parentSlug: string,
+    files: TFile[],
+    fileContents: string[],
+    baseSlug: string | undefined,
+    transaction: TUploadTransaction
+) {
     if (files.length !== fileContents.length) { throw new Error("Количество файлов должно совпадать с количеством содержимого") }
 
     const bytesAtAll = files.reduce((sum, current) => sum + current.stat.size, 0);
@@ -237,19 +185,26 @@ export async function uploadFiles(settings: YWISettings, parentSlug: string, fil
         fileSlug = transliterate(fileSlug.join("."))
 
         const slug = parentSlug + "/" + fileSlug
-        console.log(files[i])
-
         const title = files[i].name
 
+        transaction.fileName = title
         await upload(settings, settings.data.session, slug, title, fileContents[i])
 
         uploadedBytes += files[i].stat.size
-
-        console.log(i, "/", files.length, "; Bytes:", uploadedBytes, "/", bytesAtAll)
+        transaction.progress = uploadedBytes / bytesAtAll
     }
+
+    transaction.fileName = ""
+    transaction.progress = 0.0
 }
 
-export async function uploadFolders(settings: YWISettings, parentSlug: string, foldersSlug: string[], baseSlug: string | undefined) {
+export async function uploadFolders(
+    settings: YWISettings,
+    parentSlug: string,
+    foldersSlug: string[],
+    baseSlug: string | undefined,
+    transaction: TUploadTransaction
+) {
 
     for (let i = 0; i < foldersSlug.length; i++) {
         const slug = transliterate(foldersSlug[i].slice(baseSlug ? baseSlug.length + 1 : 0))
@@ -257,14 +212,15 @@ export async function uploadFolders(settings: YWISettings, parentSlug: string, f
 
         if (title === undefined) { return }
 
-        console.log(slug)
-        // console.log(slug.slice(baseSlug.length ? baseSlug.length + 1 : 0))
-        // console.log(baseSlug)
-        console.log("Folder slug: ", parentSlug + "/" + slug)
+        if (typeof title === 'string') { transaction.fileName = title }
 
         await upload(settings, settings.data.session, parentSlug + "/" + slug, title, "")
     }
+
+    transaction.fileName = ""
+    transaction.progress = 0.0
 }
+
 
 export async function uploadFile(slug: string, file: TAbstractFile | null, plugin: IYWIPlugin) {
     const formats = plugin.settings.data.exportFormats
@@ -283,39 +239,15 @@ export async function uploadFile(slug: string, file: TAbstractFile | null, plugi
     const folders = vault.getAllFolders(true)
         .filter(item => pathFilter(filePath, item.path))
 
-    await uploadFolders(plugin.settings, slug, folders.map(folder => folder.path), baseSlug)
+    const bytes = files.reduce((sum, current) => sum + current.stat.size, 0);
+    new Notice(`YWI: Начался экспорт. \nПапок для передачи: ${folders.length}\nФайлов для передачи: ${files.length}\nОбъём: ${bytes} байт`)
 
-    const tree = generateTree(files)
+    await uploadFolders(plugin.settings, slug, folders.map(folder => folder.path), baseSlug, plugin.transaction)
+
     const files_data = await Promise.all(read_tasks)
-    await uploadFiles(plugin.settings, slug, files, files_data, baseSlug)
+    await uploadFiles(plugin.settings, slug, files, files_data, baseSlug, plugin.transaction)
 
-
-    // await uploadFiles(plugin.settings, "nottest", [files[0]], [files_data[0]])
-
-
-
-    // other way:
-    //      get files
-    //      start reading files data 
-    //      get folders 
-    //      start/await pushing folders
-    //      await reading files data
-    //      start/await pushing files
-    // Нет ASSинхронности в пуше. Помним об этом
-
-
-
-    // Try rewrite file and find unexisted file
-    // Try to add file with unexisted slug
-
-    // Wide tree searching and data sending
-    // ----------------------------------------
-
-
-    //      ....put some code here....
-
-
-    // ----------------------------------------
+    new Notice("YWI: Экспорт законичлся")
 }
 
 export async function getNavTreeRoot(session_data: object) {
