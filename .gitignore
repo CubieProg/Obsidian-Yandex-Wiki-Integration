@@ -1,6 +1,10 @@
 # vscode
 .vscode 
 
+# clj
+.lsp
+.clj-kondo
+
 # Intellij
 *.iml
 .idea
