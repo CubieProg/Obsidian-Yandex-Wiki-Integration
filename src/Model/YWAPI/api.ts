@@ -1,5 +1,5 @@
 import { convertHeaders } from './Authtorization/authtorize'
-import { requestUrl, Vault, TFile, RequestUrlResponse, TAbstractFile, Notice } from "obsidian";
+import { requestUrl, TFile, TAbstractFile, Notice } from "obsidian";
 import { v4 as uuid } from 'uuid'
 
 import { TreeNodeType } from "../TreeType";
