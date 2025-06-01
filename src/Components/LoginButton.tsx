@@ -1,32 +1,9 @@
-import { useState, useContext, createContext } from 'react';
-import { read } from 'node:fs'
-// import { authtorize } from '../Authtorization/authtorize' sss
-
-
-// import puppeteer from "puppeteer";
-
-// import { sayHello } from '../Authtorization/test'sad
-import { authtorize, check_session } from '../Authtorization/authtorize'
-// import { authtorize } from '../Authtorization/authtorize'
-
+import { useState, useContext } from 'react';
+import { authtorize } from '../Model/YWAPI/Authtorization/authtorize'
 import { YwIContext } from "../Model/YWIContext"
-
-
-// import { action, observable, makeObservable } from 'mobx';
-// import { view, ViewModel } from '@yoskutik/react-vvm';
-
-
-
 import { v4 as uuid } from 'uuid'
-
-
 import { TreeNodeType } from '../Model/TreeType';
-
-
-// import { Subscriber, EventManager, EventType, Event } from '../Model/EventManager'
 import { Subscriber, EventManager, EventType, Event, EventManagerName } from '../Model/EventManager'
-
-
 import { getNavTreeRoot } from '../Model/YWAPI/api'
 import { Plugin } from 'obsidian';
 
@@ -39,7 +16,6 @@ type LoginButtonType = {
 
 
 export const LoginButton = ({ onParentClick, setOnParentClick }: LoginButtonType) => {
-    const [buttonText, setButtonText] = useState('Submit');
     const [isRun, setIsRun] = useState(false);
     const context = useContext(YwIContext);
 

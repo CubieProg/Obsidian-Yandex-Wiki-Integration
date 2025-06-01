@@ -1,6 +1,7 @@
-import { WorkspaceLeaf, TFile, ViewState, addIcon, Plugin, Menu, Modal, App, Setting, Notice } from 'obsidian';
+import { WorkspaceLeaf, TFile, ViewState, addIcon, Plugin, Menu } from 'obsidian';
 
 import { YWISettings } from "./src/Main/Settings/Settings"
+import { Commands } from './src/Main/Commands'
 import { YWISettingsTab } from "./src/Main/Settings/SettingsTab"
 import { YWIView } from "./src/Main/Components/YWIView"
 import { IYWIPlugin } from './src/Main/IYWIPlugin';
@@ -8,8 +9,6 @@ import { uploadFile } from './src/Model/YWAPI/api';
 import { TUploadTransaction } from './src/Model/YWAPI/UploadTransaction'
 
 import { MainIconText } from './src/Main/Components/MainIcon'
-
-import { Commands } from './src/Main/Commands'
 
 
 // Нотация.
@@ -31,11 +30,8 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 	}
 
 	async onload() {
-		// addIcon('yandex-wiki-integration-icon',
-		// 	`<text x="40%" y="70%" dominant-baseline="middle" text-anchor="middle" fill="currentColor" style="font: bold 56px sans-serif;">YW</text>  `);
 		addIcon('yandex-wiki-integration-icon', MainIconText);
 
-		// console.log(getIconIds())
 		this.settings = new YWISettings(this)
 		this.commands = new Commands(this)
 
@@ -67,9 +63,6 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 		]);
 
 		if (display_tab == undefined) { return }
-
-		// let str2disp = this.settings.data.displayType === 'Markdown' ? data.content : data.html
-		// str2disp = `--- \n# ${data.title}\n --- \n` + str2disp
 
 		const str2disp = (this.settings.data.displayTitle ? `--- \n# ${data.title}\n --- \n` : ``) + (this.settings.data.displayType === 'Markdown' ? data.content : data.html)
 
@@ -161,95 +154,7 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 	}
 
 	private registerCommands() {
-
 		this.commands = new Commands(this)
-
-		// this.addCommand({
-		// 	id: 'login',
-		// 	name: 'Login',
-		// 	callback: () => {
-		// 	}
-		// });
-		// this.addCommand({
-		// 	id: 'logout',
-		// 	name: 'Logout',
-		// 	callback: () => {
-		// 	}
-		// });
-		// this.addCommand({
-		// 	id: 'upload-vault',
-		// 	name: 'Upload Vault',
-		// 	callback: () => {
-		// 	}
-		// });
-		// this.addCommand({
-		// 	id: 'upload-directory',
-		// 	name: 'Upload Directory',
-		// 	callback: () => {
-		// 		new ExampleModal(this.app, (result) => {
-		// 			new Notice(`Hello, ${result}!`);
-		// 		}).open();
-		// 	}
-		// });
-		// this.addCommand({
-		// 	id: 'upload-vault-to-slug',
-		// 	name: 'Upload Vault to Slug',
-		// 	callback: () => {
-		// 		new ExampleModal(this.app, (result) => {
-		// 			new Notice(`Hello, ${result}!`);
-		// 		}).open();
-		// 	}
-		// });
-		// this.addCommand({
-		// 	id: 'upload-directory-to-slug',
-		// 	name: 'Upload Directory to Slug',
-		// 	callback: () => {
-		// 		new ExampleModal(this.app, (result) => {
-		// 			new Notice(`Hello, ${result}!`);
-		// 		}).open();
-		// 	}
-		// });
-
-
-
-
-
-		// this.addCommand({
-		// 	id: 'set-view-mode',
-		// 	name: 'Set View Mode',
-		// 	callback: () => {
-		// 		new ExampleModal(this.app, (result) => {
-		// 			new Notice(`Hello, ${result}!`);
-		// 		}).open();
-		// 	}
-		// });
-		// this.addCommand({
-		// 	id: 'set-export-formats',
-		// 	name: 'Set Export Formats',
-		// 	callback: () => {
-		// 		new ExampleModal(this.app, (result) => {
-		// 			new Notice(`Hello, ${result}!`);
-		// 		}).open();
-		// 	}
-		// });
-		// this.addCommand({
-		// 	id: 'toggle-save-session',
-		// 	name: 'Toggle Save Session',
-		// 	callback: () => {
-		// 		new ExampleModal(this.app, (result) => {
-		// 			new Notice(`Hello, ${result}!`);
-		// 		}).open();
-		// 	}
-		// });
-		// this.addCommand({
-		// 	id: 'toggle-display-headers',
-		// 	name: 'Toggle Display Headers',
-		// 	callback: () => {
-		// 		new ExampleModal(this.app, (result) => {
-		// 			new Notice(`Hello, ${result}!`);
-		// 		}).open();
-		// 	}
-		// });
 	}
 
 	private async activateView() {
@@ -270,5 +175,4 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 	}
 }
 
-// Нельзя пихуйнуть в `export class YWIPlugin`. Obsidian его тупо не загрузит. Или нужно копаться, но пофиг
 module.exports = YWIPlugin
