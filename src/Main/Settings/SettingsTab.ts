@@ -102,5 +102,13 @@ export class YWISettingsTab extends PluginSettingTab {
                         await this.settings.save()
                     })
             )
+
+        
+        // const div = containerEl.createDiv()
+        // div
+        
+        // new obsidian.Setting(containerEl).setDesc("Дорожная карта")
+        // new obsidian.Setting(containerEl).setDesc("Известные проблемы")
+        // new obsidian.Setting(containerEl).setDesc("Известные проблемы")
     }
 }
