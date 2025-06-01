@@ -1,94 +1,175 @@
-# Obsidian Sample Plugin
+# Yandex Wiki Integration
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+Плагин интеграции Obsidian с базой знаний Yandex Wiki.
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+---
+## Обозначения
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+***YWI***: Yandex Wiki Integration. Сокращение обозначает собой данный плагин. Далее, YWI и Yandex Wiki Integration используются как синонимы.
 
-## First time developing plugins?
+***Slug***: Абстракция системы Yandex Wiki. Обозначает путь до директории в системе Yandex Wiki.
 
-Quick starting guide for new plugin devs:
+---
+## Быстрый старт
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+1. Установить и включить плагин YWI.
+2. Нажать на кнопку "Войти".
+3. Авторизоваться.
+4. После авторизации, откроется дерево вашей базы знаний Yandex Wiki в плагине YWI.
+5. Выбрать в дереве YWI рабочую директорию (можете использовать свою директорию в "Личные разделы пользователей").
+6. Нажмите правую кнопку мышки на директории.
+7. В открывшемся окне выберете опцию "Установить как рабочую директорию".
+8. Нажмите на кнопку "Экспортировать хранилище".
 
-## Releasing new releases
+Начнётся процесс экспорта хранилища в указанную рабочую директорию. 
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+Прогресс экспорта будет отображаться на полоске загрузки под кнопками на панели YWI.
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+---
 
-## Adding your plugin to the community plugin list
+## Руководство пользователя
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+Далее указаны сценарии пользователя с описанием шагов для их воспроизведения.
 
-## How to use
+Подразумевается, что плагин Yandex Wiki Integration скачан и включён в вашем Obsidian.
+### Авторизация
+Самый первый сценарий, без которого ничего не будет работать.
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+Шаги: 
+1. Открыть вкладку YWI слева.
+2. Нажать на кнопку "Войти".
+3. Пройти стандартную процедуру авторизации в Yandex Wiki в открывшемся окне.
+4. После авторизации в открывшемся окне, оно закроется само.
 
-## Manually installing the plugin
+Далее, все сценарии предполагают, что пользователь авторизован.
+### Выход
+Сценарий выхода из системы. Очищает пользовательскую сессию из локальных файлов, если она была сохранена.
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+Шаги: 
+1. Открыть вкладку YWI слева.
+2. Нажать на кнопку "Выйти".
 
-## Improve code quality with eslint (optional)
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- To use eslint with this project, make sure to install eslint from terminal:
-  - `npm install -g eslint`
-- To use eslint to analyze this project use this command:
-  - `eslint main.ts`
-  - eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder:
-  - `eslint .\src\`
+Или
 
-## Funding URL
+1. Исполнить команду **Logout**
 
-You can include funding URLs where people who use your plugin can financially support it.
+### Установка рабочей директории
 
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
+Сценарий установки рабочей директории. В рабочую директорию будут экспортироваться ваши файлы из Obsidian
 
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
-```
+Шаги: 
+1. Открыть вкладку YWI слева.
+2. Авторизоваться.
+3. Найти нужную директорию в дереве навигации по Yandex Wiki.
+4. Нажать правую кнопку мыши на директории.
+5. В открывшемся окне выбрать опцию "Установить как рабочую директорию".
 
-If you have multiple URLs, you can also do:
+После данных шагов, напротив директории должна появиться иконка домика. Путь до директории будет указан стрелочками.
 
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
-```
+### Экспорт
 
-## API Documentation
+Экспорт текущего хранилища Obsidian в рабочую директорию.
 
-See https://github.com/obsidianmd/obsidian-api
+Шаги: 
+1. Открыть вкладку YWI слева.
+2. Нажать на кнопку "Экспортировать хранилище".
+
+Или
+
+1. Исполнить команду **Upload Vault**
+
+После данных шагов, начнётся экспорт хранилища в рабочую директорию. 
+
+Прогресс экспорта будет отображаться на полоске загрузки под кнопками на панели YWI.
+
+**(На данный момент выгрузка может занимать несколько минут. Криворукие разработчики про это знают и думают как решить эту проблему)**
+
+### Экспорт из дерева Obsidian Vault
+
+Экспорт выбранного файла Obsidian в рабочую директорию.
+
+Шаги: 
+1. Открыть файловый менеджер Obsidian слева.
+2. Выбрать нужный файл или папку в дереве файлового менеджера.
+3. Нажать правую кнопку мыши на файле или папке.
+4. В открывшемся окне выбрать опцию "YWI: Экспорт в Yandex Wiki".
+
+После данных шагов, начнётся экспорт выбранного файла или папки в рабочую директорию. 
+
+Прогресс экспорта будет отображаться на полоске загрузки под кнопками на панели YWI.
+
+### Экспорт хранилища из дерева Yandex Wiki Integration
+
+Экспорт хранилища Obsidian в указанную директорию Yandex Wiki
+
+Шаги: 
+1. Открыть вкладку YWI слева.
+2. Найти нужную директорию в дереве навигации по Yandex Wiki.
+3. Нажать правую кнопку мыши на директории.
+4. В открывшемся окне выбрать опцию "Экспортировать хранилище сюда".
+
+После данных шагов, начнётся экспорт экспорт хранилища в выбраную директорию. 
+
+Прогресс экспорта будет отображаться на полоске загрузки под кнопками на панели YWI.
+### Команды  
+
+Для исполнения команды, нужно нажать `ctrl + P` (латинская раскладка). После этого, в открывшемся окне, нужно ввести одну из команд перечисленных ниже: 
+
+1. **Logout** : Выход из системы (аналогично кнопке "Выход").
+2. **Upload Vault** : Экспортирует всё текущее хранилище в домашний Slug.
+3. **Upload Vault to Slug** : Экспортирует всё текущее хранилище в указанный Slug.
+4. **Set Display Type** : Позволяет установить режим отображения страниц из Yandex Wiki.
+5. **Set Export Formats** : Позволяет установить форматы файлов, которые будут экспортироваться.
+6. **Toggle Save Session** : Отключает/включает сохранение пользовательской сессии в локальных файлах.
+7. **Toggle Display Titles** : Отключает/включает отображение названия документа в заголовке из Yandex Wiki при его просмотре в YWI.
+
+---
+## Настройки
+
+### Домашняя директория
+
+Настройка, в которой указывается рабочая директория в формате slug из Yandex Wiki. Slug указывается в формате slig-ов вложенных документов через слэш `/`. 
+
+Пример: `users/your_name/some_dir` 
+### Форматы экспорта
+
+Настройка, в которой указываются форматы экспорта. При сценариях экспорта, будут экспортироваться только указанные форматы. Остальные форматы будут игнорироваться.
+
+Форматы указываются без точек через пробел.
+
+Пример: `md json txt` (будут экспортироваться только файлы формата `.md`, `.json`, `.txt`).
+### Режим отображения
+
+Настройка, в которой указывается режим отображения страниц из Yandex Wiki.
+
+Есть два режима отображения: `HTML` и `Markdown`.
+### Отображать название страницы
+
+При включённом отображении названия страниц, будет дополнительно отображаться название открытой страницы в YWI.
+
+При выключенном отображении названия страниц, страницы в YWI будут отображаться без изменений.
+
+### Сохранять сессию
+
+**Не безопасно!**
+
+При включённом режиме, будет сохраняться сессия пользователя в локальных файлах. При повторном запуске плагина YWI, при авторизации, будет использована информация в локальных файлах.
+
+При выключенном режиме, сессия не будет сохраняться в локальных файлах.
+
+---
+
+## Дорожная карта
+
+1. Экспорт вставленных картинок
+2. Предпросмотр документов с картинками
+3. Анимации интерфейса
+
+---
+
+## Известные проблемы
+
+1. При нажатии на раскрытии директории, открывается просмотр документа.
+2. Тултипы над кнопками пропадают только после клика.
+
+---
