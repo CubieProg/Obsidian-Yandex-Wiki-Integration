@@ -22,7 +22,7 @@ export class YWIView extends ItemView {
     }
 
     getDisplayText() {
-        return 'Yandex Wiki'
+        return 'Yandex Wiki Integration'
     }
 
     getIcon() {
@@ -37,10 +37,12 @@ export class YWIView extends ItemView {
         const svgLink = "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=logout"
 
         const container = this.containerEl.children[1]
+
+        
         this.root = createRoot(container);
 
         this.childs = <StrictMode>
-            <YWPannel plugin={this.plugin} />
+            <YWPannel plugin={this.plugin} parentView={this} />
         </StrictMode>
 
         this.root.render(

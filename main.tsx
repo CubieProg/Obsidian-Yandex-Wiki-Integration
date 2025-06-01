@@ -1,4 +1,4 @@
-import { WorkspaceLeaf, TFile, ViewState, addIcon, Plugin, Menu, getIconIds, Notice } from 'obsidian';
+import { WorkspaceLeaf, TFile, ViewState, addIcon, Plugin, Menu, Modal, App, Setting, Notice } from 'obsidian';
 
 import { YWISettings } from "./src/Main/Settings/Settings"
 import { YWISettingsTab } from "./src/Main/Settings/SettingsTab"
@@ -6,6 +6,10 @@ import { YWIView } from "./src/Main/Components/YWIView"
 import { IYWIPlugin } from './src/Main/IYWIPlugin';
 import { uploadFile } from './src/Model/YWAPI/api';
 import { TUploadTransaction } from './src/Model/YWAPI/UploadTransaction'
+
+import { MainIconText } from './src/Main/Components/MainIcon'
+
+import { Commands } from './src/Main/Commands'
 
 
 // Нотация.
@@ -19,18 +23,22 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 	private display_file: TFile
 	private display_tab: WorkspaceLeaf
 
+	private commands: Commands
+
 	transaction: TUploadTransaction = {
 		fileName: "",
 		progress: 0.0
 	}
 
 	async onload() {
-		addIcon('yandex-wiki-integration-icon',
-			`<text x="40%" y="70%" dominant-baseline="middle" text-anchor="middle" fill="currentColor" style="font: bold 56px sans-serif;">YW</text>  `);
-
+		// addIcon('yandex-wiki-integration-icon',
+		// 	`<text x="40%" y="70%" dominant-baseline="middle" text-anchor="middle" fill="currentColor" style="font: bold 56px sans-serif;">YW</text>  `);
+		addIcon('yandex-wiki-integration-icon', MainIconText);
 
 		// console.log(getIconIds())
 		this.settings = new YWISettings(this)
+		this.commands = new Commands(this)
+
 		await this.settings.load()
 		this.addSettingTab(new YWISettingsTab(this, this.settings))
 
@@ -123,6 +131,7 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 			["yandex-wiki-integration:get-wiki-page", async (data: any) => this.openYWPage(data)],
 			["yandex-wiki-integration:set-home-slug", async (data: any) => this.settings.setHomeSlug(data)],
 			["yandex-wiki-integration:upload", async (data: string[]) => uploadFile(data.join("/"), null, this)],
+			["yandex-wiki-integration:upload-to-slug", async (slug: string) => uploadFile(slug, null, this)],
 			["yandex-wiki-integration:upload-to-home", async (data: string[]) => uploadFile(this.settings.data.vaultSlug, null, this)],
 			["yandex-wiki-integration:test", async (data: any) => { console.log(data) }],
 			["yandex-wiki-integration:logout", async (data: any) => this.settings.registerSession(undefined, true)]
@@ -152,24 +161,95 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 	}
 
 	private registerCommands() {
-		this.addCommand({
-			id: 'login',
-			name: 'Login',
-			callback: () => {
-			}
-		});
-		this.addCommand({
-			id: 'logout',
-			name: 'Logout',
-			callback: () => {
-			}
-		});
-		this.addCommand({
-			id: 'upload-vault',
-			name: 'Upload Vault',
-			callback: () => {
-			}
-		});
+
+		this.commands = new Commands(this)
+
+		// this.addCommand({
+		// 	id: 'login',
+		// 	name: 'Login',
+		// 	callback: () => {
+		// 	}
+		// });
+		// this.addCommand({
+		// 	id: 'logout',
+		// 	name: 'Logout',
+		// 	callback: () => {
+		// 	}
+		// });
+		// this.addCommand({
+		// 	id: 'upload-vault',
+		// 	name: 'Upload Vault',
+		// 	callback: () => {
+		// 	}
+		// });
+		// this.addCommand({
+		// 	id: 'upload-directory',
+		// 	name: 'Upload Directory',
+		// 	callback: () => {
+		// 		new ExampleModal(this.app, (result) => {
+		// 			new Notice(`Hello, ${result}!`);
+		// 		}).open();
+		// 	}
+		// });
+		// this.addCommand({
+		// 	id: 'upload-vault-to-slug',
+		// 	name: 'Upload Vault to Slug',
+		// 	callback: () => {
+		// 		new ExampleModal(this.app, (result) => {
+		// 			new Notice(`Hello, ${result}!`);
+		// 		}).open();
+		// 	}
+		// });
+		// this.addCommand({
+		// 	id: 'upload-directory-to-slug',
+		// 	name: 'Upload Directory to Slug',
+		// 	callback: () => {
+		// 		new ExampleModal(this.app, (result) => {
+		// 			new Notice(`Hello, ${result}!`);
+		// 		}).open();
+		// 	}
+		// });
+
+
+
+
+
+		// this.addCommand({
+		// 	id: 'set-view-mode',
+		// 	name: 'Set View Mode',
+		// 	callback: () => {
+		// 		new ExampleModal(this.app, (result) => {
+		// 			new Notice(`Hello, ${result}!`);
+		// 		}).open();
+		// 	}
+		// });
+		// this.addCommand({
+		// 	id: 'set-export-formats',
+		// 	name: 'Set Export Formats',
+		// 	callback: () => {
+		// 		new ExampleModal(this.app, (result) => {
+		// 			new Notice(`Hello, ${result}!`);
+		// 		}).open();
+		// 	}
+		// });
+		// this.addCommand({
+		// 	id: 'toggle-save-session',
+		// 	name: 'Toggle Save Session',
+		// 	callback: () => {
+		// 		new ExampleModal(this.app, (result) => {
+		// 			new Notice(`Hello, ${result}!`);
+		// 		}).open();
+		// 	}
+		// });
+		// this.addCommand({
+		// 	id: 'toggle-display-headers',
+		// 	name: 'Toggle Display Headers',
+		// 	callback: () => {
+		// 		new ExampleModal(this.app, (result) => {
+		// 			new Notice(`Hello, ${result}!`);
+		// 		}).open();
+		// 	}
+		// });
 	}
 
 	private async activateView() {
@@ -182,9 +262,7 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 			leaf = leaves[0]
 		} else {
 			leaf = workspace.getLeftLeaf(false)
-			if (leaf === null) {
-				return
-			}
+			if (leaf === null) { return }
 			await leaf.setViewState({ type: YWIView.view_type_ywi, active: true })
 		}
 

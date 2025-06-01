@@ -1,5 +1,5 @@
 import { useState, createContext } from 'react';
-import { Plugin } from 'obsidian';
+import { ItemView, Plugin } from 'obsidian';
 
 import { LoginButton } from './LoginButton';
 import { LazyTreeView } from "./LazyTreeView"
@@ -62,10 +62,11 @@ class ViewModel {
 
 
 type YWIPannelType = {
-    plugin: IYWIPlugin
+    plugin: IYWIPlugin,
+    parentView: ItemView
 }
 
-export const YWPannel = ({ plugin }: YWIPannelType) => {
+export const YWPannel = ({ plugin, parentView }: YWIPannelType) => {
     // setting context
     // -----------------------------------------------
     const [theme, setTheme] = useState('dark');
@@ -76,6 +77,8 @@ export const YWPannel = ({ plugin }: YWIPannelType) => {
 
     const [uploadProgress, setUploadProgress] = useState(YwIContextData.sessionData)
 
+
+    // YwIContextData.parentView = parentView
     // setNavigationTree(navigationTree)
 
     const value = {
@@ -83,6 +86,7 @@ export const YWPannel = ({ plugin }: YWIPannelType) => {
         eventManager, setEventManager,
         sessionData, setSessionData,
 
+        parentView,
         plugin
     };
 

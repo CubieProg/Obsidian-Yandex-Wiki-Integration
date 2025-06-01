@@ -313,9 +313,7 @@ export const NodeView = ({ node }: TreeNodeViewType) => {
                         .setTitle('Экспортировать хранилище сюда')
                         .setIcon('lucide-import')
                         .onClick(() => {
-                            // yandex-wiki-integration:upload
                             plugin.app.vault.trigger("yandex-wiki-integration:upload", node.slug)
-                            new Notice('Exported');
                         })
                 );
 
@@ -405,6 +403,7 @@ export const LazyTreeView = () => {
 
 
     const { navigationTree } = useContext(YwIContext)
+
 
     return <TreeViewContext.Provider
         value={{

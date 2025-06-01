@@ -15,6 +15,7 @@ export const YwIContextData = {
     sessionData: null,
     eventManager: new EventManager(),
 
+    parentView: null,
     plugin: null
 }
 

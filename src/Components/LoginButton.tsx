@@ -107,23 +107,7 @@ export const LoginButton = ({ onParentClick, setOnParentClick }: LoginButtonType
     f_sub.setCallback(f_call, [EventManagerName])
     t_sub.setCallback(t_call, [f_sub_id])
 
-
     em.pushEvent(new Event(uuid(), EventType.Any, "data string"))
-
-
-    // getNavTreeRoot
-
-    // const subscriber = em.useSubscriber(subId, true)
-    // // const subscriber = new Subscriber("LoginButtonSub")
-    // subscriber.bindCallback(foo, null)
-
-    // const converter = em.useSubscriber(convId, false)
-    // // const converter = new Subscriber("TreeConverter")
-    // converter.bindCallback(conv, null)
-    // subscriber.useReciever(converter, EventType.All)
-
-    // // em.addSubscriber(subscriber)
-    // em.subscribe(subscriber, EventType.Authtorization)
 
     const handleClick = async () => {
         if (isRun) { return }
