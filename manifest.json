@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin ts",
+	"id": "yandex-wiki-integration",
 	"name": "Yandex Wiki Integration",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Try to enable ts",
-	"author": "Me",
-	"authorUrl": "https://obsidian.md",
+	"description": "Obsidian integration with Yandex Wiki knowledge base",
+	"author": "Pavel Sokolov",
+	"authorUrl": "https://github.com/CubieProg",
 	"fundingUrl": "https://obsidian.md/pricing",
 	"isDesktopOnly": false
 }
