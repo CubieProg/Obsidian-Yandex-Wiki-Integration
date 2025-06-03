@@ -12,7 +12,7 @@
 ---
 ## Быстрый старт
 
-![test title](readmeImages/common-user-script.gif)
+![test title](readmeImages/common-user-script-2.gif)
 
 1. Установить и включить плагин YWI.
 2. Нажать на кнопку "Войти".
