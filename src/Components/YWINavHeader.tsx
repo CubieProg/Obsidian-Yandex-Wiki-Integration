@@ -25,6 +25,7 @@ function showTooltip(e: React.MouseEvent<HTMLElement, MouseEvent>, container: HT
     div.style.position = "absolute"
     div.style.left = (e.clientX - rect.x) + "px"
     div.style.top = (e.clientY - rect.y) + "px"
+    
     container.appendChild(div);
     displayTooltip(div, text, { delay: 400 })
 }
@@ -33,7 +34,7 @@ function closeTooltip(e: React.MouseEvent<HTMLElement, MouseEvent>, container: H
     const tooltip = container.getElementsByClassName(`custom-tooltip-id-${text}`)
 
     Array.prototype.forEach.call(tooltip, (el: HTMLElement) => {
-        el.style.setProperty("display", "none")
+        // el.style.setProperty("display", "none")
         el.parentNode?.removeChild(el);
     });
 

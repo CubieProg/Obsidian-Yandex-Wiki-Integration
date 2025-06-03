@@ -24,7 +24,6 @@ export class YWISettings {
 
         if (!(this.data.exportFormats instanceof Array) || this.data.exportFormats.length <= 0) {
             this.data.exportFormats = ["md"]
-            console.log("Default setting formats")
         }
     }
 

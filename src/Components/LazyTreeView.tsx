@@ -258,7 +258,7 @@ export const NodeView = ({ node }: TreeNodeViewType) => {
 
     const handleMouseEvent = (e: MouseEvent<HTMLDivElement>) => {
         e.preventDefault();
-        console.log(e)
+        // console.log(e)
 
 
         // Do something

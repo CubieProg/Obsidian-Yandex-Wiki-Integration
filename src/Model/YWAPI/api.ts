@@ -44,7 +44,9 @@ async function createPage(session_data: any, slug: string, title: string) {
         headers: headers,
         body: JSON.stringify(params)
     })
-        .catch(err => { console.log("createPage error"); console.log(err) })
+        .catch(err => { 
+            // console.log("createPage error"); console.log(err) 
+        })
 
     if (!response) { throw new Error("createPage(...) error. No response") }
     return response
@@ -93,7 +95,9 @@ async function getPageDetails(session_data: any, slug: string) {
         headers: headers,
         body: JSON.stringify(params)
     })
-        .catch(err => { console.log("getPageDetails error"); console.log(err) })
+        .catch(err => { 
+            // console.log("getPageDetails error"); console.log(err) 
+        })
 
     if (!response) { throw new Error("getPageDetails(...) error. No response") }
     return response
@@ -127,7 +131,9 @@ async function updatePageDetails(
         headers: headers,
         body: JSON.stringify(params)
     })
-        .catch(err => console.log(err))
+        .catch(err => {
+            // console.log(err)
+        })
 
     if (!response) { throw new Error("updatePageDetails(...) error. No response") }
     return response
@@ -273,7 +279,9 @@ export async function getNavTreeRoot(session_data: object) {
         .then(async (response) => {
             return (await response.json)
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+            // console.log(err)
+        })
 }
 
 export async function getNavTreeNode(session_data: object, parentSlug: string) {
@@ -298,7 +306,9 @@ export async function getNavTreeNode(session_data: object, parentSlug: string) {
         .then(async (response) => {
             return (await response.json)
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+            // console.log(err)
+        })
 }
 
 export async function getYWPage(session_data: object, parentSlug: string) {
@@ -328,7 +338,9 @@ export async function getYWPage(session_data: object, parentSlug: string) {
         .then(async (response) => {
             return (await response.json)
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+            // console.log(err)
+        })
 }
 
 export async function getWholeTree(session_data: object): Promise<TreeNodeType[]> {

@@ -126,7 +126,7 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 			["yandex-wiki-integration:upload", async (data: string[]) => uploadFile(data.join("/"), null, this)],
 			["yandex-wiki-integration:upload-to-slug", async (slug: string) => uploadFile(slug, null, this)],
 			["yandex-wiki-integration:upload-to-home", async (data: string[]) => uploadFile(this.settings.data.vaultSlug, null, this)],
-			["yandex-wiki-integration:test", async (data: any) => { console.log(data) }],
+			["yandex-wiki-integration:test", async (data: any) => { /*console.log(data)*/ }],
 			["yandex-wiki-integration:logout", async (data: any) => this.settings.registerSession(undefined, true)]
 		])
 

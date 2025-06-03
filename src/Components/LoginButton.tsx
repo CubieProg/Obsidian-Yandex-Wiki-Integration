@@ -26,14 +26,14 @@ export const LoginButton = ({ onParentClick, setOnParentClick }: LoginButtonType
 
 
     const foo = (ev: Event) => {
-        console.log(`Callbacking an event: ${ev}`)
-        console.log(this)
+        // console.log(`Callbacking an event: ${ev}`)
+        // console.log(this)
         const data = ev.data
         return new Event(uuid(), EventType.Any, data + "_after_sub")
     }
 
     const conv = (ev: Event) => {
-        console.log(`Callbacking conv an event: ${ev}`)
+        // console.log(`Callbacking conv an event: ${ev}`)
         const data = ev.data
 
         const newNode: TreeNodeType =

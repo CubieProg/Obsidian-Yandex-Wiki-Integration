@@ -27,7 +27,7 @@ import Typography from '@mui/material/Typography';
 export const MyClickableCard = () => {
   const handleClick = () => {
     // Handle the click event here
-    console.log('Card clicked!');
+    // console.log('Card clicked!');
     // alert.click("123");
   };
 
