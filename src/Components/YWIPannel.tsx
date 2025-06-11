@@ -66,7 +66,7 @@ type YWIPannelType = {
     parentView: ItemView
 }
 
-export const YWPannel = ({ plugin, parentView }: YWIPannelType) => {
+export const YWIPannel = ({ plugin, parentView }: YWIPannelType) => {
     // setting context
     // -----------------------------------------------
     const [theme, setTheme] = useState('dark');

@@ -29,7 +29,7 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 		progress: 0.0
 	}
 
-	async onload() {
+	async onload() {		
 		addIcon('yandex-wiki-integration-icon', MainIconText);
 
 		this.settings = new YWISettings(this)
@@ -81,9 +81,15 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 	}
 
 	private async getOrCreateDisplayTab(): Promise<WorkspaceLeaf | undefined> {
+		
+
+
 		if (this.display_tab instanceof WorkspaceLeaf) {
 			return this.display_tab
 		}
+
+		
+
 		const leaves = this.app.workspace.getLeavesOfType(YWIPlugin.view_type_display_tab)
 
 		let display_tab;
