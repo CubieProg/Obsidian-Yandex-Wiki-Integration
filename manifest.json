@@ -1,7 +1,7 @@
 {
 	"id": "yandex-wiki-integration",
 	"name": "Yandex Wiki Integration",
-	"version": "1.0.1.2",
+	"version": "1.0.1.3",
 	"minAppVersion": "0.15.0",
 	"description": "Integration with Yandex Wiki knowledge base",
 	"author": "Pavel Sokolov",
