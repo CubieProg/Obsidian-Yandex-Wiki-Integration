@@ -22,7 +22,7 @@ export class YWIView extends ItemView {
     }
 
     getDisplayText() {
-        return 'Yandex Wiki Integration'
+        return 'Yandex wiki integration'
     }
 
     getIcon() {

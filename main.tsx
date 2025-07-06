@@ -1,4 +1,4 @@
-import { WorkspaceLeaf, TFile, ViewState, addIcon, Plugin, Menu } from 'obsidian';
+import { WorkspaceLeaf, TFile, ViewState, addIcon, Plugin, Menu, MarkdownView } from 'obsidian';
 
 import { YWISettings } from "./src/Main/Settings/Settings"
 import { Commands } from './src/Main/Commands'
@@ -19,6 +19,8 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 
 	static view_type_display_tab: string = "yandex-wiki-display-tab"
 
+	private static YWFileNameMD: string = "Yandex Wiki Display File.md"
+
 	private display_file: TFile
 	private display_tab: WorkspaceLeaf
 
@@ -29,7 +31,7 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 		progress: 0.0
 	}
 
-	async onload() {		
+	async onload() {
 		addIcon('yandex-wiki-integration-icon', MainIconText);
 
 		this.settings = new YWISettings(this)
@@ -50,7 +52,7 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 	}
 
 	async onunload(): Promise<void> {
-		this.closeYWPage()
+
 	}
 
 	private async openYWPage(data: any) {
@@ -74,50 +76,25 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 		display_tab.setViewState(state)
 	}
 
-	private async closeYWPage(): Promise<void> {
-		if (this.display_tab instanceof WorkspaceLeaf) {
-			this.display_tab.detach()
-		}
-	}
-
 	private async getOrCreateDisplayTab(): Promise<WorkspaceLeaf | undefined> {
-		
-
-
-		if (this.display_tab instanceof WorkspaceLeaf) {
-			return this.display_tab
-		}
-
-		
-
 		const leaves = this.app.workspace.getLeavesOfType(YWIPlugin.view_type_display_tab)
+		if (leaves.length > 0) { return leaves[0] }
 
-		let display_tab;
+		const display_tab = this.app.workspace.getLeaf('tab')
+		if (display_tab === null) { return }
 
-		if (leaves.length > 0) {
-			display_tab = leaves[0]
-		} else {
-			display_tab = this.app.workspace.getLeaf('tab')
-			if (display_tab === null) {
-				return
-			}
-			await display_tab.setViewState({ type: YWIPlugin.view_type_display_tab, active: true })
-		}
-
-		this.display_tab = display_tab
-
+		await display_tab.setViewState({ type: YWIPlugin.view_type_display_tab, active: true })
 		return display_tab
 	}
 
 	private async getOrCreateDisplayFile(): Promise<TFile> {
 		if (this.display_file instanceof TFile) { return this.display_file }
 
-		const YWFileNameMD = "Yandex Wiki Display File.md"
 		const FunnyText = "### Страница рендера _страниц_ (ха-ха) из Yandex Wiki"
-		let file = this.app.vault.getMarkdownFiles().find(file => file.name === YWFileNameMD)
+		let file = this.app.vault.getMarkdownFiles().find(file => file.name === YWIPlugin.YWFileNameMD)
 
 		if (!file) {
-			file = await this.app.vault.create(YWFileNameMD, FunnyText)
+			file = await this.app.vault.create(YWIPlugin.YWFileNameMD, FunnyText)
 		}
 
 		this.display_file = file

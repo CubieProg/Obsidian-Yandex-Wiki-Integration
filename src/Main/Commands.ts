@@ -20,17 +20,17 @@ export class Commands {
             new Notice(`YWI: Вы вышли из YWI`)
         }],
 
-        ["Upload Vault", async () => {
+        ["Upload vault", async () => {
             this.plugin.app.vault.trigger("yandex-wiki-integration:upload-to-home")
         }],
 
-        ["Upload Vault to Slug", async () => {
+        ["Upload vault to slug", async () => {
             new UploadToSlugModal(this.plugin, async (slug: string) => {
                 this.plugin.app.vault.trigger("yandex-wiki-integration:upload-to-slug", slug)
             })
         }],
 
-        ["Set Display Type", async () => {
+        ["Set display type", async () => {
             new DisplayTypeModal(this.plugin, async (result) => {
                 this.plugin.settings.data.displayType = result
                 await this.plugin.settings.save()
@@ -39,7 +39,7 @@ export class Commands {
             }).open();
         }],
 
-        ["Set Export Formats", async () => {
+        ["Set export formats", async () => {
             new ExportFormatsModal(this.plugin, async (result) => {
                 this.plugin.settings.data.exportFormats = result.split(" ")
                 await this.plugin.settings.save()
@@ -48,7 +48,7 @@ export class Commands {
             }).open();
         }],
 
-        ["Toggle Save Session", async () => {
+        ["Toggle save session", async () => {
             this.plugin.settings.data.saveSession = !this.plugin.settings.data.saveSession
             this.plugin.settings.registerSession(this.plugin.settings.data.saveSession, true)
             await this.plugin.settings.save()
@@ -59,7 +59,7 @@ export class Commands {
             new Notice(`YWI: ${noticeMessage}`)
         }],
 
-        ["Toggle Display Titles", async () => {
+        ["Toggle display titles", async () => {
             this.plugin.settings.data.displayTitle = !this.plugin.settings.data.displayTitle
             await this.plugin.settings.save()
 
@@ -82,17 +82,16 @@ export class Commands {
     }
 
     public registerCommands() {
-        return 
-        // this.commands.forEach((callback, command_name) => {
-        //     this.plugin.addCommand(
-        //         {
-        //             name: command_name,
-        //             id: this.getCommandId(command_name),
-        //             callback: async () => {
-        //                 await callback()
-        //             }
-        //         }
-        //     )
-        // });
+        this.commands.forEach((callback, command_name) => {
+            this.plugin.addCommand(
+                {
+                    name: command_name,
+                    id: this.getCommandId(command_name),
+                    callback: async () => {
+                        await callback()
+                    }
+                }
+            )
+        });
     }
 }

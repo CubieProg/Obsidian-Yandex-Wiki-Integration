@@ -3,7 +3,7 @@
 	"name": "Yandex Wiki Integration",
 	"version": "1.0.1.1",
 	"minAppVersion": "0.15.0",
-	"description": "Integration plugin with Yandex Wiki knowledge base",
+	"description": "Integration with Yandex Wiki knowledge base",
 	"author": "Pavel Sokolov",
 	"authorUrl": "https://github.com/CubieProg",
 	"isDesktopOnly": false
