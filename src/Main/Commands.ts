@@ -10,10 +10,6 @@ import { UploadToSlugModal } from '../Components/Modals/UploadToSlugModal'
 
 export class Commands {
     private commands: Map<string, Function> = new Map<string, Function>([
-        // ["Login", async () => { }],
-        // ["Upload Directory", async () => { }],
-        // ["Upload Directory to Slug", async () => { }],
-
         ["Logout", async () => {
             this.plugin.app.vault.trigger("yandex-wiki-integration:logout")
 

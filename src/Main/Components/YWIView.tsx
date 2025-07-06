@@ -29,8 +29,6 @@ export class YWIView extends ItemView {
         return "yandex-wiki-integration-icon"
     }
 
-    
-
     async onOpen() {        
         this.render()
     }
