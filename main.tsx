@@ -22,7 +22,6 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 	private static YWFileNameMD: string = "Yandex Wiki Display File.md"
 
 	private display_file: TFile
-	private display_tab: WorkspaceLeaf
 
 	private commands: Commands
 
