@@ -15,6 +15,37 @@ import { MainIconText } from './src/Main/Components/MainIcon'
 // 		YWI: Yandex Wiki Integration. Везде, где используется это сокращение, читать надо так.
 
 class YWIPlugin extends Plugin implements IYWIPlugin {
+
+	// Bad code. Sorry... I will fix it, I promise
+	// ------------------------------------------------
+	private display_tab: WorkspaceLeaf
+
+	private async getOrCreateDisplayTab(): Promise<WorkspaceLeaf | undefined> {
+		if (this.display_tab instanceof WorkspaceLeaf) {
+			return this.display_tab
+		}
+
+		const leaves = this.app.workspace.getLeavesOfType(YWIPlugin.view_type_display_tab)
+
+		let display_tab;
+
+		if (leaves.length > 0) {
+			display_tab = leaves[0]
+		} else {
+			display_tab = this.app.workspace.getLeaf('tab')
+			if (display_tab === null) {
+				return
+			}
+			await display_tab.setViewState({ type: YWIPlugin.view_type_display_tab, active: true })
+		}
+
+		this.display_tab = display_tab
+
+		return display_tab
+	}
+	// ------------------------------------------------
+
+
 	settings: YWISettings;
 
 	static view_type_display_tab: string = "yandex-wiki-display-tab"
@@ -75,16 +106,20 @@ class YWIPlugin extends Plugin implements IYWIPlugin {
 		display_tab.setViewState(state)
 	}
 
-	private async getOrCreateDisplayTab(): Promise<WorkspaceLeaf | undefined> {
-		const leaves = this.app.workspace.getLeavesOfType(YWIPlugin.view_type_display_tab)
-		if (leaves.length > 0) { return leaves[0] }
+	// private async getOrCreateDisplayTab(): Promise<WorkspaceLeaf | undefined> {
+	// 	// console.log(this.app.workspace.getLeavesOfType('tab'))
+	// 	// console.log(this.app.workspace.getActiveFile())
+	// 	// console.log(this.app.workspace.activeEditor)
 
-		const display_tab = this.app.workspace.getLeaf('tab')
-		if (display_tab === null) { return }
+	// 	const leaves = this.app.workspace.getLeavesOfType(YWIPlugin.view_type_display_tab)
+	// 	if (leaves.length > 0) { return leaves[0] }
 
-		await display_tab.setViewState({ type: YWIPlugin.view_type_display_tab, active: true })
-		return display_tab
-	}
+	// 	const display_tab = this.app.workspace.getLeaf('tab')
+	// 	if (display_tab === null) { return }
+
+	// 	await display_tab.setViewState({ type: YWIPlugin.view_type_display_tab, active: true })
+	// 	return display_tab
+	// }
 
 	private async getOrCreateDisplayFile(): Promise<TFile> {
 		if (this.display_file instanceof TFile) { return this.display_file }
