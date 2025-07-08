@@ -1,25 +1,62 @@
-import { Plugin } from 'obsidian';
+import { Notice, Plugin } from 'obsidian';
 import { YWISessionGlobalProvider } from "../../Model/YWIContext"
+
+
+class SettingsData {
+    vaultSlug: string = "";
+    displayType: string = "";
+    session: any = null;
+    displayTitle: boolean = false;
+    saveSession: boolean = false;
+    exportFormats: string[] = ["md"];
+}
+
 
 export class YWISettings {
     private plugin: Plugin;
+    public data: SettingsData
 
-    data: {
-        listLength: number;
-        vaultSlug: string;
-        displayType: string;
-        session: any;
-        displayTitle: boolean;
-        saveSession: boolean;
-        exportFormats: string[];
-    }
 
     constructor(plugin: Plugin) {
         this.plugin = plugin
     }
 
+    private static isTypeOf<T>(jsonObject: Object, instanceType: { new(): T; }): boolean {
+        try {
+            // Check that all the properties of the JSON Object are also available in the Class.
+            const instanceObject = new instanceType();
+            for (let propertyName in instanceObject) {
+                if (!jsonObject.hasOwnProperty(propertyName)) {
+                    // If any property in instance object is missing then we have a mismatch.
+                    return false;
+                }
+            }
+            // All the properties are matching between object and the instance type.
+            return true;
+        } catch {
+            return false;
+        }
+    };
+
+    private async checkAndFixData(data: any) {
+        if (data instanceof Object)
+
+
+            await this.plugin.saveData(this.data)
+    }
+
     public async load() {
-        const data = await this.plugin.loadData()
+
+        let data = await this.plugin.loadData()
+
+        if (!YWISettings.isTypeOf(data, SettingsData)){
+            if(data !== null){
+                new Notice(`Файл 'data.json' повреждён и будет восстановлен до стандартных значений.`)
+            }
+            await this.plugin.saveData(new SettingsData())
+            data = await this.plugin.loadData()
+        }
+
         this.data = data
 
         if (!(this.data.exportFormats instanceof Array) || this.data.exportFormats.length <= 0) {
