@@ -38,15 +38,7 @@ export class YWISettings {
         }
     };
 
-    private async checkAndFixData(data: any) {
-        if (data instanceof Object)
-
-
-            await this.plugin.saveData(this.data)
-    }
-
     public async load() {
-
         let data = await this.plugin.loadData()
 
         if (!YWISettings.isTypeOf(data, SettingsData)){

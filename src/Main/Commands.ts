@@ -78,17 +78,17 @@ export class Commands {
     }
 
     public registerCommands() {
-        return
-        // this.commands.forEach((callback, command_name) => {
-        //     this.plugin.addCommand(
-        //         {
-        //             name: command_name,
-        //             id: this.getCommandId(command_name),
-        //             callback: async () => {
-        //                 await callback()
-        //             }
-        //         }
-        //     )
-        // });
+        // return
+        this.commands.forEach((callback, command_name) => {
+            this.plugin.addCommand(
+                {
+                    name: command_name,
+                    id: this.getCommandId(command_name),
+                    callback: async () => {
+                        await callback()
+                    }
+                }
+            )
+        });
     }
 }
