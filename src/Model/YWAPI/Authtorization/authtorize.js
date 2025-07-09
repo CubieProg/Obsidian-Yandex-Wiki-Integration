@@ -1,5 +1,6 @@
 
 const puppeteer = require('puppeteer')
+const obsidian = require('obsidian')
 
 const sync_fetch = require('sync-fetch')
 
@@ -147,13 +148,21 @@ export async function authtorize(safe = false, forced = false, stored_session = 
 
 
     let brws;
-
-    brws = await puppeteer.launch({
-        executablePath: pathToBrowser,
-        headless: false,
-        args: ["--no-sandbox"],
-        ignoreDefaultArgs: ['--mute-audio'],
-    });
+    try{
+        brws = await puppeteer.launch({
+            executablePath: pathToBrowser,
+            headless: false,
+            args: ["--no-sandbox"],
+            ignoreDefaultArgs: ['--mute-audio'],
+        });
+    } catch (err){
+        if(!pathToBrowser){
+            new obsidian.Notice("Установите путь до браузера в настройках. Поле 'pathToBrowser'")
+        }else {
+            new obsidian.Notice(`Пусть до браузера ${pathToBrowser} возможно не корректен. \nНужен полный путь. Например, 'C/.../chrome.exe'`)
+        }
+        
+    }
 
     // const browser = await puppeteer.launch({
     //     headless: false,
