@@ -97,6 +97,7 @@ export const LoginButton = ({ onParentClick, setOnParentClick }: LoginButtonType
             session = await authtorize(true, false, session);
             context.plugin.app.vault.trigger("yandex-wiki-integration:session-fetch", session)
             context.setSessionData(session)
+            context.plugin.settings.data.session = session
 
             const treeNodes = await getNavTreeRoot(session)
             const treeViewData = [...treeNodes.tree[0].children.results]
