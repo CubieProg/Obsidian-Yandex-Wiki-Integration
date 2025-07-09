@@ -1,5 +1,6 @@
 
 const puppeteer = require('puppeteer')
+// const puppeteer = require('puppeteer-core')
 const obsidian = require('obsidian')
 
 const sync_fetch = require('sync-fetch')
@@ -147,6 +148,35 @@ export async function authtorize(safe = false, forced = false, stored_session = 
     let collab_org_id
 
 
+    
+    // try {
+    //     brws = await puppeteer.launch({
+    //         executablePath: 'C:/Program Files/Google/Chrome/Application/chrome',
+    //         headless: false,
+    //         args: ["--no-sandbox"],
+    //         ignoreDefaultArgs: ['--mute-audio'],
+    //     });
+    // } catch {
+    //     try {
+    //         brws = await puppeteer.launch({
+    //             product: "chrome",
+    //             headless: false,
+    //             args: ["--no-sandbox"],
+    //             ignoreDefaultArgs: ['--mute-audio'],
+    //         });
+    //     } catch {
+    //         brws = await puppeteer.launch({
+    //             product: "firefox",
+    //             headless: false,
+    //             args: ["--no-sandbox"],
+    //             ignoreDefaultArgs: ['--mute-audio'],
+    //         });
+    //     }
+    // }
+    
+    
+    // 'C:/Program Files/Google/Chrome/Application/chrome.exe'
+
     let brws;
     try{
         brws = await puppeteer.launch({
@@ -161,7 +191,6 @@ export async function authtorize(safe = false, forced = false, stored_session = 
         }else {
             new obsidian.Notice(`Пусть до браузера ${pathToBrowser} возможно не корректен. \nНужен полный путь. Например, 'C/.../chrome.exe'`)
         }
-        
     }
 
     // const browser = await puppeteer.launch({
