@@ -9,6 +9,7 @@ class SettingsData {
     displayTitle: boolean = false;
     saveSession: boolean = false;
     exportFormats: string[] = ["md"];
+    pathToBrowser: string = "";
 }
 
 

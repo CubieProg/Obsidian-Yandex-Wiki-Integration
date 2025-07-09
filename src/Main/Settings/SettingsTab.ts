@@ -23,6 +23,19 @@ export class YWISettingsTab extends PluginSettingTab {
 
         containerEl.empty()
 
+
+        new obsidian.Setting(containerEl)
+            .setName('Путь до браузера')
+            .setDesc('Необходимо указать путь до браузера.')
+            .addText((text: TextComponent) =>
+                text
+                    .setValue(this.settings.data.pathToBrowser.toString())
+                    .onChange(async (value: string) => {
+                        this.settings.data.pathToBrowser = value
+                        await this.settings.save()
+                    })
+            )
+
         new obsidian.Setting(containerEl)
             .setName('Домашняя директория')
             .setDesc('Директория, куда будут выгружаться файлы из Obsidian в Yandex Wiki (Нужно указывать Slug)')

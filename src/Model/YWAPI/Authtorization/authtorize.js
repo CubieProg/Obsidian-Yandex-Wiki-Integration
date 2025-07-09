@@ -122,7 +122,7 @@ async function serialize_session(headers, cookies) {
 }
 
 
-export async function authtorize(safe = false, forced = false, stored_session = undefined) {
+export async function authtorize(safe = false, forced = false, stored_session = undefined, pathToBrowser = undefined) {
     if (false) { //!forced
         let stored_session = await deserialize_session(SESSION_FILENAME)
         if (stored_session != null) { return stored_session }
@@ -148,29 +148,12 @@ export async function authtorize(safe = false, forced = false, stored_session = 
 
     let brws;
 
-    try {
-        brws = await puppeteer.launch({
-            headless: false,
-            args: ["--no-sandbox"],
-            ignoreDefaultArgs: ['--mute-audio'],
-        });
-    } catch {
-        try {
-            brws = await puppeteer.launch({
-                product: "chrome",
-                headless: false,
-                args: ["--no-sandbox"],
-                ignoreDefaultArgs: ['--mute-audio'],
-            });
-        } catch {
-            brws = await puppeteer.launch({
-                product: "firefox",
-                headless: false,
-                args: ["--no-sandbox"],
-                ignoreDefaultArgs: ['--mute-audio'],
-            });
-        }
-    }
+    brws = await puppeteer.launch({
+        executablePath: pathToBrowser,
+        headless: false,
+        args: ["--no-sandbox"],
+        ignoreDefaultArgs: ['--mute-audio'],
+    });
 
     // const browser = await puppeteer.launch({
     //     headless: false,

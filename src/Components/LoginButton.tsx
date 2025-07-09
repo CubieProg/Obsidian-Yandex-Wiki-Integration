@@ -94,7 +94,7 @@ export const LoginButton = ({ onParentClick, setOnParentClick }: LoginButtonType
         try {
             session = context.plugin.settings.data.session
 
-            session = await authtorize(true, false, session);
+            session = await authtorize(true, false, session, context.plugin.settings.data.pathToBrowser);
             context.plugin.app.vault.trigger("yandex-wiki-integration:session-fetch", session)
             context.setSessionData(session)
             context.plugin.settings.data.session = session
