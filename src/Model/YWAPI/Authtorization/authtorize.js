@@ -211,8 +211,7 @@ export async function authtorize(safe = false, forced = false, stored_session = 
     await page.goto(AUTH_PAGE, { waitUntil: safe ? SAFE_WORKER : UNSAFE_WORKER });
     // await page.goto(AUTH_PAGE, { waitUntil: safe ? SAFE_WORKER : UNSAFE_WORKER });
 
-
-    console.log("start timeout")
+    
     let listen_promise = new Promise(async (resolve, reject) => {
         let timerId;
         timerId = setInterval(async function () {
