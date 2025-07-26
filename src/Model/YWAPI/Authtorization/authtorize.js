@@ -148,7 +148,7 @@ export async function authtorize(safe = false, forced = false, stored_session = 
     let collab_org_id
 
 
-    
+
     // try {
     //     brws = await puppeteer.launch({
     //         executablePath: 'C:/Program Files/Google/Chrome/Application/chrome',
@@ -173,22 +173,22 @@ export async function authtorize(safe = false, forced = false, stored_session = 
     //         });
     //     }
     // }
-    
-    
+
+
     // 'C:/Program Files/Google/Chrome/Application/chrome.exe'
 
     let brws;
-    try{
+    try {
         brws = await puppeteer.launch({
             executablePath: pathToBrowser,
             headless: false,
             args: ["--no-sandbox"],
             ignoreDefaultArgs: ['--mute-audio'],
         });
-    } catch (err){
-        if(!pathToBrowser){
+    } catch (err) {
+        if (!pathToBrowser) {
             new obsidian.Notice("Установите путь до браузера в настройках. Поле 'pathToBrowser'")
-        }else {
+        } else {
             new obsidian.Notice(`Пусть до браузера ${pathToBrowser} возможно не корректен. \nНужен полный путь. Например, 'C/.../chrome.exe'`)
         }
     }
@@ -201,17 +201,17 @@ export async function authtorize(safe = false, forced = false, stored_session = 
     const browser = brws
     const page = await browser.newPage();
 
-
     page.on('request', request => {
         if ('x-collab-org-id' in request.headers()) {
             collab_org_id = request.headers()['x-collab-org-id']
         }
     });
 
-
     await page.setDefaultNavigationTimeout(0)
     await page.goto(AUTH_PAGE, { waitUntil: safe ? SAFE_WORKER : UNSAFE_WORKER });
+    // await page.goto(AUTH_PAGE, { waitUntil: safe ? SAFE_WORKER : UNSAFE_WORKER });
 
+    
     let listen_promise = new Promise(async (resolve, reject) => {
         let timerId;
         timerId = setInterval(async function () {
@@ -219,6 +219,60 @@ export async function authtorize(safe = false, forced = false, stored_session = 
                 clearInterval(timerId);
                 reject()
             }
+
+            // console.log("timer")
+
+            // await page.evaluate(() => {
+
+            //     document.querySelectorAll('a').forEach(function (elem) {
+
+            //         elem.addEventListener('click', function (e) {
+
+            //             e.preventDefault();
+            //             window.history.pushState("object or string", "Title", this.href);
+
+            //             let evt = new CustomEvent('urlChange');
+            //             window.dispatchEvent(evt);
+
+            //         });
+
+            //     });
+            //     window.addEventListener('urlChange', function (e) {
+            //         console.log("URLCHANGE")
+            //         console.log(e)
+            //         // document.querySelector('#myUrl').innerHTML = window.location.href;
+            //     });
+
+
+            //     // console.log(":ыыы")
+            //     // window.addEventListener('onUpdated', function (event) {
+            //     //     event.preventDefault();
+            //     //     // console.log("url change")
+            //     //     console.log(e)
+            //     // });
+
+            //     // window.onUpdated.addListener(
+            //     //     callback: (tabId: number, changeInfo: object, tab: Tab) => {
+            //     //         console.log("url change")
+            //     //         console.log(e)
+            //     //     },
+            //     // )
+            // })
+
+            // await page.evaluate(() => {
+            //     console.log(":asdasdasdas")
+            //     window.addEventListener("beforeunload", (event) => {
+            //         console.log(event)
+            //         // if (event.clientY < 0) {
+            //         // console.log(event.clientY)
+            //         console.log(window.location.href); // capture the url
+            //         event.preventDefault();
+            //         var message = 'Are you sure you want to leave123?';
+            //         event.returnValue = message;
+            //         return message;
+            //         // }
+            //     })
+            // });
 
             let cookie_names = await page.cookies().then(res => res.map(x => x.name.toLowerCase()));
             const is_exit = NEED_COOKIES.every(cookie => cookie_names.includes(cookie)) && collab_org_id !== undefined;
@@ -237,7 +291,9 @@ export async function authtorize(safe = false, forced = false, stored_session = 
         }, TIMEOUT);
     })
 
+
     let cookies = await listen_promise.then((res) => res);
+
 
     browser.close();
 
