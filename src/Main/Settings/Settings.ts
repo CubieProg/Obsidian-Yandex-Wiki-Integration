@@ -1,5 +1,6 @@
 import { Notice, Plugin } from 'obsidian';
 import { YWISessionGlobalProvider } from "../../Model/YWIContext"
+import { defaultSettings } from './defaultSettings';
 
 
 class SettingsData {
@@ -22,6 +23,18 @@ export class YWISettings {
         this.plugin = plugin
     }
 
+
+    private crushedDataNotice() {
+        new Notice(`Файл 'data.json' повреждён и будет восстановлен до стандартных значений.`)
+    }
+
+    private firstLaunchNotice() {
+        new Notice(
+            `Видимо, вы запустили 'Yandex Wiki Integration' в первый раз.\n\nСпасибо за установку плагина!!!\n\nДля детальной информации, ознакомтесь с инструкцией.\n\nЕсли вы нашли ошибку - откройте, пожалуйста, Issue в github-е.`,
+            15000
+        )
+    }
+
     private static isTypeOf<T>(jsonObject: Object, instanceType: { new(): T; }): boolean {
         try {
             // Check that all the properties of the JSON Object are also available in the Class.
@@ -42,11 +55,15 @@ export class YWISettings {
     public async load() {
         let data = await this.plugin.loadData()
 
-        if (!YWISettings.isTypeOf(data, SettingsData)){
-            if(data !== null){
-                new Notice(`Файл 'data.json' повреждён и будет восстановлен до стандартных значений.`)
+        if (!YWISettings.isTypeOf(data, SettingsData)) {
+            if (data !== null) {
+                this.crushedDataNotice()
+            } else {
+                this.firstLaunchNotice()
             }
-            await this.plugin.saveData(new SettingsData())
+
+            // await this.plugin.saveData(new SettingsData())
+            await this.plugin.saveData(structuredClone(defaultSettings))
             data = await this.plugin.loadData()
         }
 
