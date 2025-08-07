@@ -1,11 +1,16 @@
 import { convertHeaders } from './Authtorization/authtorize'
-import { requestUrl, TFile, TAbstractFile, Notice } from "obsidian";
+import { requestUrl, TFile, TAbstractFile, Notice, RequestUrlResponsePromise } from "obsidian";
 import { v4 as uuid } from 'uuid'
 
 import { TreeNodeType } from "../TreeType";
 import { IYWIPlugin } from 'src/Main/IYWIPlugin';
 import { YWISettings } from 'src/Main/Settings/Settings'
 import { transliterate } from './transliterate'
+import { StatusCode, status_codes } from "./StatusCodes";
+import { delay } from "./utils";
+
+
+export type RequestMethods = "GET" | "POST"
 
 const formatFilter = (allowed: string[], cmp: string) => {
     return (allowed.includes(cmp))
@@ -14,6 +19,43 @@ const formatFilter = (allowed: string[], cmp: string) => {
 const pathFilter = (path: string, cmp: string) => {
     if (path === "__path__") { return true }
     return cmp.startsWith(path)
+}
+
+
+export type FailResponse = {
+    statusCode: StatusCode
+    headers: undefined
+}
+
+const max_retries = 10;
+const delayMultiplier = 2;
+
+async function request(
+    URL: string,
+    headers: any,   // Record<string, string>,
+    method: RequestMethods = "GET",
+    data: any = undefined,
+    skipRetry: boolean = false,
+    retries: number = 0
+): Promise<RequestUrlResponsePromise | FailResponse> {
+    if (retries > max_retries || (retries >= 1 && skipRetry)) {
+        return { statusCode: status_codes[0] } as FailResponse
+    }
+
+    const response = await requestUrl({
+        url: URL,
+        method: method,
+        headers: headers,
+        body: data
+    }).catch(
+        async (err) => {
+            console.error(`${method} Request Fail. URL: ${URL}`, err)
+            await delay((retries + 1) * delayMultiplier)
+            return await request(URL, headers, method, data, skipRetry, retries + 1)
+        }
+    )
+    
+    return response
 }
 
 async function createPage(session_data: any, slug: string, title: string) {
@@ -38,15 +80,25 @@ async function createPage(session_data: any, slug: string, title: string) {
         ['yc_session', 'Session_id']
     )
 
-    const response = await requestUrl({
-        url: URL,
-        method: method,
-        headers: headers,
-        body: JSON.stringify(params)
-    })
+    const response = await request(
+        URL,
+        headers,
+        "POST",
+        JSON.stringify(params)
+    )
         .catch(err => { 
-            // console.log("createPage error"); console.log(err) 
+            console.error(err)
         })
+
+    // const response = await requestUrl({
+    //     url: URL,
+    //     method: method,
+    //     headers: headers,
+    //     body: JSON.stringify(params)
+    // })
+    //     .catch(err => { 
+    //         // console.log("createPage error"); console.log(err) 
+    //     })
 
     if (!response) { throw new Error("createPage(...) error. No response") }
     return response
@@ -89,15 +141,26 @@ async function getPageDetails(session_data: any, slug: string) {
         ]
     }
 
-    const response = await requestUrl({
-        url: URL,
-        method: method,
-        headers: headers,
-        body: JSON.stringify(params)
-    })
+
+    const response = await request(
+        URL,
+        headers,
+        "POST",
+        JSON.stringify(params)
+    )
         .catch(err => { 
-            // console.log("getPageDetails error"); console.log(err) 
+            console.error(err)
         })
+
+    // const response = await requestUrl({
+    //     url: URL,
+    //     method: method,
+    //     headers: headers,
+    //     body: JSON.stringify(params)
+    // })
+    //     .catch(err => { 
+    //         // console.log("getPageDetails error"); console.log(err) 
+    //     })
 
     if (!response) { throw new Error("getPageDetails(...) error. No response") }
     return response
@@ -125,15 +188,25 @@ async function updatePageDetails(
         ['yc_session', 'Session_id']
     )
 
-    const response = await requestUrl({
-        url: URL,
-        method: method,
-        headers: headers,
-        body: JSON.stringify(params)
-    })
-        .catch(err => {
-            // console.log(err)
+    const response = await request(
+        URL,
+        headers,
+        "POST",
+        JSON.stringify(params)
+    )
+        .catch(err => { 
+            console.error(err)
         })
+
+    // const response = await requestUrl({
+    //     url: URL,
+    //     method: method,
+    //     headers: headers,
+    //     body: JSON.stringify(params)
+    // })
+    //     .catch(err => {
+    //         // console.log(err)
+    //     })
 
     if (!response) { throw new Error("updatePageDetails(...) error. No response") }
     return response
@@ -149,28 +222,39 @@ export async function upload(
     try {
         const createData = await createPage(session_data, slug, title)
         // const createDataJson = (await createData.json)
-        settings.updateCSRF(createData.headers["x-csrf-token"])
+        if(createData.headers !== undefined){ // Тупая проверка на FailResponce
+            settings.updateCSRF(createData.headers["x-csrf-token"])
+        }
     } catch (err) { }
 
     // МБ не надо. Хотя, я пытался...
     // ------------------------------------------------------------
     const detailsData = await getPageDetails(session_data, slug)
+    
+    if(detailsData.headers === undefined){ // Тупая проверка на FailResponce
+        return
+    }
+
     settings.updateCSRF(detailsData.headers["x-csrf-token"])
     const detailsDataJson = (await detailsData.json)
-    // ------------------------------------------------------------
-
     const last_revision_id = detailsDataJson.last_revision_id
     const page_id = detailsDataJson.id
+    // ------------------------------------------------------------
 
-    if (content.length > 0) {
+
+    if (content.length > 0) { // Это праверка на папку
         const updateData = await updatePageDetails(session_data, page_id, last_revision_id, content)
-        settings.updateCSRF(updateData.headers["x-csrf-token"])
+        
+        if(updateData.headers !== undefined){ // Тупая проверка на FailResponce
+            settings.updateCSRF(updateData.headers["x-csrf-token"])
+        }
     }
 }
 
 
 
 import { TUploadTransaction } from './UploadTransaction'
+// import { delay } from 'framer-motion';
 
 export async function uploadFiles(
     settings: YWISettings,
