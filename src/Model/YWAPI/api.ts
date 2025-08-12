@@ -30,6 +30,14 @@ export type FailResponse = {
 const max_retries = 10;
 const delayMultiplier = 2;
 
+function tryJsonParse(value: string): string {
+    try {
+        return JSON.stringify(JSON.parse(value), null, 4)
+    } catch (err) {}
+
+    return value
+}
+
 async function request(
     URL: string,
     headers: any,   // Record<string, string>,
@@ -42,19 +50,43 @@ async function request(
         return { statusCode: status_codes[0] } as FailResponse
     }
 
-    const response = await requestUrl({
+    const params = {
         url: URL,
         method: method,
         headers: headers,
-        body: data
-    }).catch(
-        async (err) => {
-            console.error(`${method} Request Fail. URL: ${URL}`, err)
-            await delay((retries + 1) * delayMultiplier)
-            return await request(URL, headers, method, data, skipRetry, retries + 1)
+        body: data,
+        throw: false
+    }
+
+    const response = await requestUrl(params)
+    .then(
+        async (resp) => {
+            if (resp.status >= 400){
+                console.error(`${method} Request Fail. URL: ${URL}`, resp, `\n\nRespoce text: ${tryJsonParse(resp.text)}`)
+                console.error("Params:", params)
+
+                await delay((retries + 1) * delayMultiplier)
+                return await request(URL, headers, method, data, skipRetry, retries + 1)
+            }
+
+            return resp
         }
     )
     
+    // .catch(
+    //     async (err) => {
+    //         console.error(`${method} Request Fail. URL: ${URL}`, err)
+    //         // console.log(this)
+    //         // console.error(`${method} Request Fail. URL: ${URL}`, err)
+    //         console.log(Object.keys(err))
+    //         console.log(err.status)
+    //         console.log(err.headers)
+            
+    //         await delay((retries + 1) * delayMultiplier)
+    //         // return await request(URL, headers, method, data, skipRetry, retries + 1)
+    //     }
+    // )
+
     return response
 }
 
