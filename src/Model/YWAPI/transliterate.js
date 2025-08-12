@@ -81,3 +81,6 @@ export function transliterate(word) {
 }
 
 console.log(transliterate("01.03.2025 С решениями.md"))
+
+// "title": dot.test/and\\so(on)we{need}more*+-=@
+// "slug": eac997b50963/stovii/dot.testandsoonweneedmore-
